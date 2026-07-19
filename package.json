@@ -1,0 +1,21 @@
+{
+  "name": "protein-pound",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/web",
+    "lint": "npm run lint -w apps/web",
+    "typecheck": "npm run typecheck -w apps/web && npm run typecheck -w packages/shared"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vercel/og": "^0.11.1"
+  }
+}

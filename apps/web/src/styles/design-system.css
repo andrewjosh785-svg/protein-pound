@@ -1,0 +1,227 @@
+/* Design system extracted verbatim from the protein-per-pound-v6 prototype's inline <style> block. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap");
+
+/* The browser's default 8px body margin was never reset — harmless under the old top-header
+   layout, but the sidebar shell's 100vh/sticky math is pixel-sensitive, so that stray margin
+   showed up as a small persistent gap at the very bottom of the page. */
+html, body { margin: 0; padding: 0; }
+
+.ppp-root {
+  --paper: #F7F6F1;
+  --ink: #1C2331;
+  --tag: #FFD500;
+  --deal: #D62828;
+  --green: #20713F;
+  --line: #D9D6CC;
+  --surface: #fff;
+  --muted: #555b66;
+  --faint: #8a8f99;
+  /* Yellow accent blocks (.sel, .tot.win, tab counts) always need dark text on top —
+     fixed regardless of theme, since --ink itself flips to a light colour in dark mode. */
+  --tag-ink: #1C2331;
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+.ppp-root[data-theme="dark"] {
+  --paper: #14181f;
+  --ink: #EDEBE3;
+  --tag: #FFD500;
+  --deal: #FF6B6B;
+  --green: #3DDC84;
+  --line: #2b313c;
+  --surface: #1e232c;
+  --muted: #9aa1ad;
+  --faint: #6e7580;
+}
+.ppp-disp { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; }
+.hdr { border-bottom: 3px solid var(--ink); padding: 22px 20px 16px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; justify-content: space-between; }
+.hdr h1 { margin: 0; font-size: clamp(30px, 5vw, 44px); line-height: .9; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; font-family: "Barlow Condensed", sans-serif; }
+.hdr h1 .slash { color: var(--deal); }
+.hdr p { margin: 4px 0 0; font-size: 13px; color: var(--muted); max-width: 360px; }
+
+/* Persistent sidebar app shell (authenticated app only — the landing page and
+   signed-out shared-meal view keep the simpler top .hdr bar since there's no nav to show). */
+.app-shell { display: flex; min-height: 100vh; align-items: stretch; }
+.sidebar {
+  width: 260px; flex-shrink: 0; border-right: 1.5px solid var(--ink);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+}
+.sidebar-brand { padding: 24px 18px 0; flex-shrink: 0; }
+.sidebar-brand h1 { margin: 0 0 6px; font-size: 26px; line-height: .95; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; font-family: "Barlow Condensed", sans-serif; }
+.sidebar-brand h1 .slash { color: var(--deal); }
+.sidebar-brand p { margin: 0 0 26px; font-size: 12px; color: var(--muted); line-height: 1.4; }
+/* Only the nav list scrolls if it ever overflows — brand and footer stay pinned
+   in place regardless, so the sign-out/theme controls are never scrolled out of view. */
+.sidebar-nav { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; padding: 0 18px; min-height: 0; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid transparent;
+  background: none; cursor: pointer; font: inherit; font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .4px; font-size: 14px; color: var(--ink); text-align: left;
+}
+.sidebar-item:hover { border-color: var(--line); }
+.sidebar-item.on { background: var(--ink); color: var(--paper); }
+.sidebar-item-icon { font-size: 16px; line-height: 1; }
+.sidebar-footer { border-top: 1.5px solid var(--line); padding: 14px 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sidebar-footer-user { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--muted); overflow: hidden; min-width: 0; }
+.sidebar-footer-user span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.linklike { background: none; border: none; padding: 0; font: inherit; font-size: 11px; font-weight: 700; color: var(--deal); cursor: pointer; text-decoration: underline; text-align: left; }
+.sidebar-theme-btn { border: 1.5px solid var(--ink); background: transparent; cursor: pointer; width: 32px; height: 32px; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+/* This bottom padding used to live on .ppp-root itself, which put it outside the
+   sidebar shell's own height — the sidebar's sticky/100vh sizing didn't cover that
+   trailing space, so it read as a dead gap and the sidebar appeared to un-stick right
+   at the end of the page. Scoping it to the scrollable content column instead fixes both. */
+.app-content { flex: 1; min-width: 0; padding-bottom: 64px; }
+@media (max-width: 720px) {
+  .app-shell { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1.5px solid var(--ink); }
+}
+.ctrls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); row-gap: 10px; }
+.ctrls label, .fld label { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; font-weight: 600; color: var(--muted); }
+/* Keeps a label glued to its control when the row wraps at narrow widths, instead of the
+   label orphaning onto the previous line and the control dropping alone to the next. */
+.fld-inline { display: inline-flex; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
+.pill { font-size: 13px; font-weight: 600; padding: 7px 14px; border: 1.5px solid var(--ink); background: transparent; cursor: pointer; color: var(--ink); }
+.pill.on { background: var(--ink); color: var(--paper); }
+select, input[type=number], input[type=text], input[type=email], input[type=password], textarea { font: inherit; font-weight: 600; font-size: 13px; padding: 7px 10px; border: 1.5px solid var(--ink); background: var(--surface); color: var(--ink); border-radius: 0; box-sizing: border-box; }
+input[type=number] { width: 80px; }
+/* A native <select> renders a couple of px taller than a same-padding input/button even with
+   identical box-sizing — forcing an explicit height removes that so a select field lines up
+   with its siblings in a .fldrow instead of sitting a hair off from align-items:flex-end. */
+select, input[type=number], input[type=text], input[type=email], input[type=password] { height: 32px; }
+textarea { font-weight: 400; width: 100%; max-width: 520px; min-height: 90px; }
+/* Grid items default to stretch, which makes every card in a row match the tallest one when
+   a single card's Recipe/Prices accordion expands. align-items:start keeps each card at its
+   own natural height instead. */
+.grid { display: grid; align-items: start; gap: 18px; padding: 20px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.card { background: var(--surface); border: 1.5px solid var(--ink); display: flex; flex-direction: column; }
+.card-top { padding: 18px 18px 14px; flex: 1; }
+.badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border: 1px solid var(--ink); }
+.badge.v { border-color: var(--green); color: var(--green); }
+.badge.best { background: var(--deal); border-color: var(--deal); color: #fff; }
+.badge.cust { background: var(--ink); color: var(--paper); }
+/* min-height reserves 2 lines' worth of space so a one-line meal name still lines up
+   with a two-line one in the same grid row, without ever truncating a longer name. */
+.card h3 { margin: 0 0 8px; font-size: 24px; font-weight: 700; line-height: 1.05; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; min-height: 2.1em; }
+.card h3 a { color: inherit; text-decoration: none; }
+.card h3 a:hover, .card h3 a:focus-visible { text-decoration: underline; }
+/* Same idea for the description, but clamped at 2 lines with an ellipsis — unlike the
+   title, a long AI-generated description is fine to truncate rather than reserve for. */
+.card .desc {
+  font-size: 13px; color: var(--muted); margin: 0 0 14px; line-height: 1.55;
+  min-height: 3.1em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.stats { display: flex; gap: 16px; font-size: 12px; color: var(--muted); flex-wrap: wrap; row-gap: 6px; }
+.stats b { color: var(--ink); font-size: 14px; }
+.tagrow { display: flex; align-items: stretch; border-top: 1.5px solid var(--ink); }
+.sel { background: var(--tag); color: var(--tag-ink); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+.sel .big { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 26px; line-height: 1; }
+.sel .sm { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; }
+.valcell { padding: 12px 16px; text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 3px; border-left: 1.5px solid var(--ink); }
+.valcell .big { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 26px; line-height: 1; color: var(--green); }
+.valcell .sm { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+.actions { display: flex; border-top: 1.5px solid var(--ink); }
+.actions button { flex: 1; font: inherit; font-weight: 600; font-size: 12.5px; padding: 11px 4px; background: transparent; border: none; cursor: pointer; color: var(--ink); }
+.actions button + button { border-left: 1.5px solid var(--ink); }
+.actions .add { background: var(--ink); color: var(--paper); }
+/* Wide content (up to 7 columns: ingredient + 6 stores) scrolls inside its own container rather
+   than getting clipped by the card's fixed width — the card itself never scrolls horizontally.
+   The mask fades the right edge as a scroll affordance, hinting there's more without JS. */
+.brk {
+  border-top: 1px dashed var(--line); padding: 12px 16px; font-size: 12.5px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, black calc(100% - 20px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 20px), transparent 100%);
+}
+.brk table { width: 100%; min-width: 480px; border-collapse: collapse; table-layout: fixed; }
+.brk th, .brk td { text-align: left; padding: 5px 6px; font-weight: 400; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.brk th:first-child, .brk td:first-child { padding-left: 0; }
+.brk th:last-child, .brk td:last-child { padding-right: 0; }
+.brk th { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; white-space: normal; word-break: break-word; }
+.brk th.namecol, .brk td.namecol { width: 34%; white-space: normal; }
+.brk .lo { color: var(--green); font-weight: 700; }
+.catrow td { padding-top: 14px; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; font-weight: 700; color: var(--deal); text-align: left; }
+.catrow:first-child td { padding-top: 4px; }
+@media print {
+  body * { visibility: hidden; }
+  .print-shopping-list, .print-shopping-list * { visibility: visible; }
+  .print-shopping-list { position: absolute; left: 0; top: 0; width: 100%; mask-image: none; -webkit-mask-image: none; overflow: visible; }
+}
+.recipe { border-top: 1px dashed var(--line); padding: 14px 16px 18px; font-size: 13px; }
+.recipe h4 { margin: 0 0 10px; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 16px; letter-spacing: .5px; }
+.recipe .time { font-size: 11px; font-weight: 700; color: var(--deal); text-transform: uppercase; letter-spacing: .6px; }
+.recipe ul { margin: 8px 0 14px; padding-left: 18px; }
+.recipe ul li { margin-bottom: 5px; line-height: 1.5; }
+.recipe ol { margin: 8px 0 0; padding-left: 20px; }
+.recipe ol li { margin-bottom: 10px; line-height: 1.55; }
+.listwrap { padding: 18px 20px; }
+.totrow { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin: 14px 0 20px; max-width: 860px; }
+.tot { border: 1.5px solid var(--ink); background: var(--surface); padding: 10px 12px; }
+.tot.win { background: var(--tag); color: var(--tag-ink); }
+.tot .st { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+.tot .pr { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 28px; line-height: 1.1; }
+.tot .df { font-size: 11px; color: var(--muted); }
+.empty { border: 1.5px dashed var(--ink); padding: 36px 20px; text-align: center; color: var(--muted); font-size: 14px; max-width: 860px; }
+.note { padding: 20px; font-size: 11px; color: var(--faint); }
+.landing { position: relative; min-height: 100vh; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 56px; padding: 60px 24px; }
+.landing-hero { max-width: 460px; }
+.landing-title { font-size: clamp(40px, 6vw, 60px); line-height: .95; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 12px; }
+.landing-title .slash { color: var(--deal); }
+.landing-sub { font-size: 17px; color: var(--muted); margin: 0 0 28px; line-height: 1.4; }
+.landing-features { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 14.5px; }
+.landing-features li { padding-left: 24px; position: relative; line-height: 1.4; }
+.landing-features li::before { content: "→"; position: absolute; left: 0; color: var(--deal); font-weight: 700; }
+.landing-auth { width: 320px; padding: 26px; background: var(--surface); flex-shrink: 0; }
+@media (max-width: 560px) { .landing { gap: 40px; padding: 40px 20px; } .landing-auth { width: 100%; max-width: 320px; } }
+.fldrow { display: flex; flex-wrap: wrap; gap: 14px; margin: 14px 0; align-items: flex-end; }
+.fld { display: flex; flex-direction: column; gap: 4px; }
+.bar { height: 14px; border: 1.5px solid var(--ink); background: var(--surface); margin: 6px 0 4px; }
+.bar.mini { height: 8px; border-width: 1px; margin: 4px 0; }
+.barfill { height: 100%; transition: width .3s; }
+.targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 14px 0; max-width: 860px; }
+.tcard { border: 1.5px solid var(--ink); background: var(--surface); padding: 10px 12px; font-size: 12px; }
+.navmenu-divider { height: 1px; background: var(--line); margin: 4px 0; }
+.tcard .big { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 24px; line-height: 1.1; }
+.ok { color: var(--green); } .bad { color: var(--deal); }
+.weekgrid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); margin: 6px 0 20px; }
+.daycard { border: 1.5px solid var(--ink); background: var(--surface); display: flex; flex-direction: column; }
+.daycard.over { border-color: var(--deal); }
+.dayhead { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 10px 4px; }
+.dayhead .dname { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 20px; text-transform: uppercase; }
+.dayhead .dcost { font-size: 11px; color: var(--muted); }
+.daybody { padding: 0 10px 8px; flex: 1; }
+.dentry { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 0; border-bottom: 1px dashed var(--line); }
+.dentry .nm { flex: 1; line-height: 1.25; }
+.dentry .nm .zap { color: var(--deal); font-weight: 700; }
+.dentry .kc { color: var(--muted); white-space: nowrap; }
+.mini-btn { border: 1px solid var(--ink); background: transparent; cursor: pointer; font-weight: 700; font-size: 12px;
+  width: 20px; height: 20px; line-height: 1; padding: 0; color: var(--ink); }
+.servings-input { width: 32px; height: 20px; padding: 0 2px; font-size: 11px; text-align: center; }
+.dayfoot { padding: 6px 10px 10px; border-top: 1.5px solid var(--ink); font-size: 12px; }
+.dayfoot .kcal { display: flex; justify-content: space-between; font-weight: 600; }
+.dayfoot .left { font-size: 11px; }
+.dayadd { width: 100%; margin-top: 6px; }
+.quickbox { border: 1.5px solid var(--ink); background: var(--surface); padding: 12px 14px; margin: 0 0 16px; max-width: 860px; }
+.quickbox h3 { margin: 0 0 2px; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 20px; }
+.quickbox p { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+.bwrap { padding: 18px 20px; max-width: 860px; }
+.irow { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.xbtn { border: 1.5px solid var(--ink); background: transparent; cursor: pointer; font-weight: 700; padding: 4px 10px; color: var(--ink); }
+/* inline-flex + centering makes the label immune to height/line-height mismatches — e.g. when
+   a caller constrains height tighter than the font's natural line-height, plain text layout
+   resolves that overflow asymmetrically (more space above the text than below), which read as
+   the button text sitting off-centre. */
+.bigbtn { font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; font-size: 16px;
+  padding: 10px 20px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); cursor: pointer; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; }
+.bigbtn.alt { background: transparent; color: var(--ink); }
+@media (max-width: 560px) { .totrow { grid-template-columns: repeat(2, 1fr); } }
+/* Negative offset keeps the ring inside the element's own border box — with a positive
+   offset it bled outward into whatever sits flush next to it (e.g. the Generate input,
+   which has no gap to the button beside it). --ink instead of --deal avoids reading as
+   an error/validation state, since --deal is also our "bad"/error colour elsewhere. */
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }

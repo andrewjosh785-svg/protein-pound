@@ -1,0 +1,32 @@
+# Supabase CLI config. Run `supabase init` normally generates this file;
+# it's hand-written here because the CLI isn't installed on this machine yet.
+# Once installed: `supabase login`, `supabase link --project-ref <ref>`, `supabase db push`.
+project_id = "protein-pound"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+jwt_expiry = 3600
+enable_signup = true
+
+[edge_runtime]
+enabled = true
+
+[functions.generate-recipe]
+verify_jwt = true
