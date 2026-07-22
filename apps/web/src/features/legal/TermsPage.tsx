@@ -1,8 +1,7 @@
 import { ThemeToggle } from "../../lib/theme/ThemeToggle";
 
 /** Public page, reachable signed-in or signed-out — linked from the landing page and
- * paywall footers. Placeholder bracketed fields need filling in with real business
- * details before this is relied on for live billing; see the note at the top. */
+ * paywall footers. */
 export function TermsPage({ onBack }: { onBack: () => void }) {
   return (
     <div className="bwrap" style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px" }}>
@@ -17,17 +16,11 @@ export function TermsPage({ onBack }: { onBack: () => void }) {
       </h1>
       <p style={{ fontSize: 12.5, color: "var(--muted)", margin: "0 0 20px" }}>Last updated: 20 July 2026</p>
 
-      <div className="bad" style={{ fontSize: 12.5, padding: "10px 14px", marginBottom: 20 }}>
-        Draft placeholder — replace the bracketed [business name/address/contact] fields
-        below with your real registered details before relying on this for live billing.
-        This is a solid starting draft, not a substitute for legal review.
-      </div>
-
       <section style={{ fontSize: 14, lineHeight: 1.6 }}>
         <h2>1. Who we are</h2>
         <p>
-          Protein/Pound ("we", "us", "our") is operated by [your business name / sole trader
-          name], of [registered address]. You can contact us at [contact email].
+          Protein/Pound ("we", "us", "our") is operated by Joshua Andrew, of Flat 1
+          Swancourt House, SN25 1BT. You can contact us at andrewjosh785@gmail.com.
         </p>
 
         <h2>2. The service</h2>
@@ -64,9 +57,9 @@ export function TermsPage({ onBack }: { onBack: () => void }) {
         <p>
           Because you get a free 7-day trial to evaluate the service before any charge, we
           don't generally offer refunds for the current billing period once a payment has
-          been taken. If something's gone wrong on our end, contact us at [contact email]
-          and we'll look at it fairly. This doesn't affect any statutory rights you have as
-          a UK consumer.
+          been taken. If something's gone wrong on our end, contact us at
+          andrewjosh785@gmail.com and we'll look at it fairly. This doesn't affect any
+          statutory rights you have as a UK consumer.
         </p>
 
         <h2>6. Acceptable use</h2>

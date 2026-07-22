@@ -1,8 +1,7 @@
 import { ThemeToggle } from "../../lib/theme/ThemeToggle";
 
 /** Public page, reachable signed-in or signed-out — linked from the landing page and
- * paywall footers. Placeholder bracketed fields need filling in with real business
- * details before this is relied on for live billing; see the note at the top. */
+ * paywall footers. */
 export function PrivacyPage({ onBack }: { onBack: () => void }) {
   return (
     <div className="bwrap" style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px" }}>
@@ -17,19 +16,13 @@ export function PrivacyPage({ onBack }: { onBack: () => void }) {
       </h1>
       <p style={{ fontSize: 12.5, color: "var(--muted)", margin: "0 0 20px" }}>Last updated: 20 July 2026</p>
 
-      <div className="bad" style={{ fontSize: 12.5, padding: "10px 14px", marginBottom: 20 }}>
-        Draft placeholder — replace the bracketed [business name/address/contact] fields
-        below with your real registered details before relying on this for live billing.
-        This is a solid starting draft, not a substitute for legal review.
-      </div>
-
       <section style={{ fontSize: 14, lineHeight: 1.6 }}>
         <h2>1. Who we are</h2>
         <p>
-          This policy explains how Protein/Pound, operated by [your business name / sole
-          trader name] of [registered address] ("we", "us"), collects and uses your
-          personal data. We're the data controller for the purposes of UK GDPR. Contact us
-          at [contact email] with any questions or requests.
+          This policy explains how Protein/Pound, operated by Joshua Andrew of Flat 1
+          Swancourt House, SN25 1BT ("we", "us"), collects and uses your personal data.
+          We're the data controller for the purposes of UK GDPR. Contact us at
+          andrewjosh785@gmail.com with any questions or requests.
         </p>
 
         <h2>2. What we collect</h2>
@@ -83,9 +76,9 @@ export function PrivacyPage({ onBack }: { onBack: () => void }) {
           <li>Request a copy of your data in a portable format</li>
         </ul>
         <p>
-          To exercise any of these, email [contact email]. You also have the right to
-          complain to the UK Information Commissioner's Office (ico.org.uk) if you think
-          we've mishandled your data.
+          To exercise any of these, email andrewjosh785@gmail.com. You also have the right
+          to complain to the UK Information Commissioner's Office (ico.org.uk) if you
+          think we've mishandled your data.
         </p>
 
         <h2>8. Cookies</h2>
