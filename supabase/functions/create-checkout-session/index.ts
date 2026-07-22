@@ -59,17 +59,34 @@ Deno.serve(async (req) => {
       }
     }
 
-    const session = await stripeRequest(STRIPE_SECRET_KEY, "POST", "checkout/sessions", {
+    const baseParams = {
       mode: "subscription",
       line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
       subscription_data: { trial_period_days: 7 },
       client_reference_id: userId,
-      ...(existingSub?.stripe_customer_id
-        ? { customer: existingSub.stripe_customer_id }
-        : { customer_email: userEmail }),
       success_url: origin + "/?checkout=success",
       cancel_url: origin + "/?checkout=cancelled",
-    });
+    };
+
+    let session;
+    try {
+      session = await stripeRequest(STRIPE_SECRET_KEY, "POST", "checkout/sessions", {
+        ...baseParams,
+        ...(existingSub?.stripe_customer_id
+          ? { customer: existingSub.stripe_customer_id }
+          : { customer_email: userEmail }),
+      });
+    } catch (err) {
+      // Stored customer ID can go stale — e.g. it belongs to test mode while we're now
+      // running live keys, or the customer was deleted directly in Stripe. Fall back to
+      // creating a fresh customer via email rather than hard-failing the whole checkout.
+      const isStaleCustomer = existingSub?.stripe_customer_id && err instanceof Error && /no such customer/i.test(err.message);
+      if (!isStaleCustomer) throw err;
+      session = await stripeRequest(STRIPE_SECRET_KEY, "POST", "checkout/sessions", {
+        ...baseParams,
+        customer_email: userEmail,
+      });
+    }
 
     return jsonResponse({ url: session.url });
   } catch (err) {
