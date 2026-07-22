@@ -27,6 +27,9 @@ export function LandingPage() {
         </h2>
         <AuthForm />
       </div>
+      <div style={{ position: "absolute", bottom: 16, fontSize: 12, color: "var(--faint)" }}>
+        <a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a>
+      </div>
     </div>
   );
 }

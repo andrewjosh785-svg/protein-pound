@@ -8,6 +8,8 @@ import { WeekPage } from "./features/week/WeekPage";
 import { AuthWidget } from "./features/auth/AuthWidget";
 import { LandingPage } from "./features/landing/LandingPage";
 import { UpgradePage } from "./features/billing/UpgradePage";
+import { TermsPage } from "./features/legal/TermsPage";
+import { PrivacyPage } from "./features/legal/PrivacyPage";
 import { Sidebar, type Tab } from "./features/nav/Sidebar";
 import { useAuth } from "./lib/auth/AuthContext";
 import { useTheme } from "./lib/theme/ThemeContext";
@@ -34,6 +36,26 @@ function useMealSlugFromPath(): [string | null, (path: string) => void] {
   return [match ? decodeURIComponent(match[1]) : null, navigate];
 }
 
+/** Shares the same history-backed navigate as useMealSlugFromPath so all in-app links
+ * behave consistently, without needing a full router for two static pages. */
+function useLegalPageFromPath(): ["terms" | "privacy" | null, (path: string) => void] {
+  const [path, setPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const navigate = (nextPath: string) => {
+    window.history.pushState(null, "", nextPath);
+    setPath(nextPath);
+  };
+
+  const page = path === "/terms" ? "terms" : path === "/privacy" ? "privacy" : null;
+  return [page, navigate];
+}
+
 function Logo() {
   return (
     <div>
@@ -51,7 +73,22 @@ function App() {
   const [tab, setTab] = useState<Tab>("meals");
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const [mealSlug, navigate] = useMealSlugFromPath();
+  const [legalPage, navigateLegal] = useLegalPageFromPath();
   const subscription = useSubscription(user?.id);
+
+  // Fully public and independent of auth/subscription state — checked before the loading
+  // guard too, so these never get stuck behind an auth check that isn't relevant to them.
+  if (legalPage) {
+    return (
+      <div className="ppp-root" data-theme={theme}>
+        {legalPage === "terms" ? (
+          <TermsPage onBack={() => navigateLegal("/")} />
+        ) : (
+          <PrivacyPage onBack={() => navigateLegal("/")} />
+        )}
+      </div>
+    );
+  }
 
   if (loading) {
     return <div className="note">Loading…</div>;

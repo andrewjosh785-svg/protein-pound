@@ -52,6 +52,10 @@ export function UpgradePage() {
         >
           Sign out
         </button>
+        <p style={{ fontSize: 11, color: "var(--faint)", marginTop: 14 }}>
+          By starting a trial you agree to our <a href="/terms">Terms of Service</a> and{" "}
+          <a href="/privacy">Privacy Policy</a>.
+        </p>
       </div>
     </div>
   );
