@@ -7,10 +7,12 @@ import { RecipeBuilderPage } from "./features/recipe-builder/RecipeBuilderPage";
 import { WeekPage } from "./features/week/WeekPage";
 import { AuthWidget } from "./features/auth/AuthWidget";
 import { LandingPage } from "./features/landing/LandingPage";
+import { UpgradePage } from "./features/billing/UpgradePage";
 import { Sidebar, type Tab } from "./features/nav/Sidebar";
 import { useAuth } from "./lib/auth/AuthContext";
 import { useTheme } from "./lib/theme/ThemeContext";
 import { ThemeToggle } from "./lib/theme/ThemeToggle";
+import { useSubscription, hasActiveAccess } from "./lib/queries/useSubscription";
 
 /** No router library — the app only ever needed tab-switching until shareable meal URLs (C)
  * came along, so this hand-rolls the one route it actually needs. */
@@ -49,6 +51,7 @@ function App() {
   const [tab, setTab] = useState<Tab>("meals");
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const [mealSlug, navigate] = useMealSlugFromPath();
+  const subscription = useSubscription(user?.id);
 
   if (loading) {
     return <div className="note">Loading…</div>;
@@ -74,6 +77,18 @@ function App() {
     return (
       <div className="ppp-root" data-theme={theme}>
         <LandingPage />
+      </div>
+    );
+  }
+
+  if (subscription.isLoading) {
+    return <div className="note">Loading…</div>;
+  }
+
+  if (!hasActiveAccess(subscription.data ?? null)) {
+    return (
+      <div className="ppp-root" data-theme={theme}>
+        <UpgradePage />
       </div>
     );
   }

@@ -74,7 +74,14 @@
       "Bash(python3 -c ' *)",
       "Bash(grep -n \"^Chicken thigh\\\\|^Chicken breast\\\\|^Turkey mince\\\\|^Beef mince\\\\|^White fish\\\\|^Tuna in brine\\\\|^Sardines\\\\|^Eggs$\\\\|^Firm tofu\\\\|^Greek yoghurt\\\\|^Cottage cheese\\\\|^Semi skimmed\\\\|^Red lentils\\\\|^Chickpeas$\\\\|^Kidney beans\\\\|^Peanut butter\\\\|^Porridge oats\\\\|^Rice$\\\\|^Pasta$\\\\|^Egg noodles\\\\|^Tortilla wraps\\\\|^Wholemeal bread\\\\|^Potatoes$\\\\|^Frozen mixed\\\\|^Chopped tomatoes\\\\|^Onions$\\\\|^Bananas$\" /private/tmp/claude-501/-Users-joshandrew-ProteinPound/b91ba2f3-38e6-477b-9282-e8f87544643a/scratchpad/ctt_page1.txt)",
       "Bash(grep -n \"^Chicken thigh\\\\|^Chicken breast\\\\|^Turkey mince\\\\|^Beef mince\\\\|^White fish\\\\|^Tuna in brine\\\\|^Sardines\\\\|^Eggs$\\\\|^Firm tofu\\\\|^Greek yoghurt\\\\|^Cottage cheese\\\\|^Semi skimmed\\\\|^Red lentils\\\\|^Chickpeas$\\\\|^Kidney beans\\\\|^Peanut butter\\\\|^Porridge oats\\\\|^Rice$\\\\|^Pasta$\\\\|^Egg noodles\\\\|^Tortilla wraps\\\\|^Wholemeal bread\\\\|^Potatoes$\\\\|^Frozen mixed\\\\|^Chopped tomatoes\\\\|^Onions$\\\\|^Bananas$\" /private/tmp/claude-501/-Users-joshandrew-ProteinPound/b91ba2f3-38e6-477b-9282-e8f87544643a/scratchpad/ctt_page1_full.txt)",
-      "Bash(grep -n \"^Chicken thigh\\\\|^Chicken breast\\\\|^Turkey mince\\\\|^Beef mince\\\\|^White fish\\\\|^Tuna in brine\\\\|^Sardines\\\\|^Eggs$\\\\|^Firm tofu\\\\|^Greek yoghurt\\\\|^Cottage cheese\\\\|^Semi skimmed\\\\|^Red lentils\\\\|^Chickpeas$\\\\|^Kidney beans\\\\|^Peanut butter\\\\|^Porridge oats\\\\|^Rice$\\\\|^Pasta$\\\\|^Egg noodles\\\\|^Tortilla wraps\\\\|^Wholemeal bread\\\\|^Potatoes$\\\\|^Frozen mixed\\\\|^Chopped tomatoes\\\\|^Onions$\\\\|^Bananas$\" /private/tmp/claude-501/-Users-joshandrew-ProteinPound/b91ba2f3-38e6-477b-9282-e8f87544643a/scratchpad/ctt_page2_full.txt)"
+      "Bash(grep -n \"^Chicken thigh\\\\|^Chicken breast\\\\|^Turkey mince\\\\|^Beef mince\\\\|^White fish\\\\|^Tuna in brine\\\\|^Sardines\\\\|^Eggs$\\\\|^Firm tofu\\\\|^Greek yoghurt\\\\|^Cottage cheese\\\\|^Semi skimmed\\\\|^Red lentils\\\\|^Chickpeas$\\\\|^Kidney beans\\\\|^Peanut butter\\\\|^Porridge oats\\\\|^Rice$\\\\|^Pasta$\\\\|^Egg noodles\\\\|^Tortilla wraps\\\\|^Wholemeal bread\\\\|^Potatoes$\\\\|^Frozen mixed\\\\|^Chopped tomatoes\\\\|^Onions$\\\\|^Bananas$\" /private/tmp/claude-501/-Users-joshandrew-ProteinPound/b91ba2f3-38e6-477b-9282-e8f87544643a/scratchpad/ctt_page2_full.txt)",
+      "Bash(git commit -m ' *)",
+      "Bash(gh auth *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(ssh -T git@github.com -o BatchMode=yes -o ConnectTimeout=5)",
+      "Bash(ssh-keygen -t ed25519 -C \"protein-pound-push\" -f ~/.ssh/id_ed25519 -N \"\")",
+      "Bash(ssh -T git@github.com -o StrictHostKeyChecking=accept-new)"
     ]
   }
 }

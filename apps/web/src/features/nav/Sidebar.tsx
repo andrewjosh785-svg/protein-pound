@@ -1,6 +1,7 @@
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../../lib/auth/AuthContext";
 import { useTheme } from "../../lib/theme/ThemeContext";
+import { useCreatePortalSession } from "../../lib/queries/useCreatePortalSession";
 
 export type Tab = "meals" | "gen" | "build" | "week";
 
@@ -14,6 +15,7 @@ const NAV_ITEMS: Array<{ id: Tab; label: string; icon: string }> = [
 export function Sidebar({ tab, onSelectTab }: { tab: Tab; onSelectTab: (t: Tab) => void }) {
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const portal = useCreatePortalSession();
 
   return (
     <aside className="sidebar">
@@ -42,6 +44,9 @@ export function Sidebar({ tab, onSelectTab }: { tab: Tab; onSelectTab: (t: Tab) 
       <div className="sidebar-footer">
         <div className="sidebar-footer-user">
           <span>{user?.email}</span>
+          <button className="linklike" onClick={() => portal.mutate()} disabled={portal.isPending}>
+            {portal.isPending ? "Opening…" : "Manage billing"}
+          </button>
           <button className="linklike" onClick={() => supabase.auth.signOut()}>
             Sign out
           </button>
