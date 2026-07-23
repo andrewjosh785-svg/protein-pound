@@ -81,7 +81,8 @@
       "Bash(git push *)",
       "Bash(ssh -T git@github.com -o BatchMode=yes -o ConnectTimeout=5)",
       "Bash(ssh-keygen -t ed25519 -C \"protein-pound-push\" -f ~/.ssh/id_ed25519 -N \"\")",
-      "Bash(ssh -T git@github.com -o StrictHostKeyChecking=accept-new)"
+      "Bash(ssh -T git@github.com -o StrictHostKeyChecking=accept-new)",
+      "Bash(xargs -I{} sh -c 'echo {}; cat {} | grep version')"
     ]
   }
 }

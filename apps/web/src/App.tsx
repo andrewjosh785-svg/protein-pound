@@ -11,10 +11,12 @@ import { UpgradePage } from "./features/billing/UpgradePage";
 import { TermsPage } from "./features/legal/TermsPage";
 import { PrivacyPage } from "./features/legal/PrivacyPage";
 import { Sidebar, type Tab } from "./features/nav/Sidebar";
+import { OnboardingOverlay } from "./features/onboarding/OnboardingOverlay";
 import { useAuth } from "./lib/auth/AuthContext";
 import { useTheme } from "./lib/theme/ThemeContext";
 import { ThemeToggle } from "./lib/theme/ThemeToggle";
 import { useSubscription, hasActiveAccess } from "./lib/queries/useSubscription";
+import { hasSeenOnboarding, markOnboardingSeen } from "./lib/onboarding";
 
 /** No router library — the app only ever needed tab-switching until shareable meal URLs (C)
  * came along, so this hand-rolls the one route it actually needs. */
@@ -75,6 +77,13 @@ function App() {
   const [mealSlug, navigate] = useMealSlugFromPath();
   const [legalPage, navigateLegal] = useLegalPageFromPath();
   const subscription = useSubscription(user?.id);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (user && hasActiveAccess(subscription.data ?? null) && !hasSeenOnboarding()) {
+      setShowOnboarding(true);
+    }
+  }, [user, subscription.data]);
 
   // Fully public and independent of auth/subscription state — checked before the loading
   // guard too, so these never get stuck behind an auth check that isn't relevant to them.
@@ -170,6 +179,14 @@ function App() {
           )}
         </main>
       </div>
+      {showOnboarding && (
+        <OnboardingOverlay
+          onDismiss={() => {
+            setShowOnboarding(false);
+            markOnboardingSeen();
+          }}
+        />
+      )}
     </div>
   );
 }

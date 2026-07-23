@@ -48,7 +48,7 @@ export function AuthWidget({ closeSignal }: { closeSignal?: unknown }) {
             position: "absolute",
             top: "calc(100% + 8px)",
             right: 0,
-            width: 260,
+            width: 300,
             zIndex: 10,
             background: "var(--surface)",
           }}

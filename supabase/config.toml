@@ -20,10 +20,37 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:5173"
-additional_redirect_urls = ["http://localhost:5173"]
+site_url = "https://protein-pound.vercel.app"
+# exp://** covers Expo Go's dynamic, LAN-IP-dependent redirect URI (e.g. exp://192.168.1.5:8081/--/...)
+# — an exact-match entry would break every time the phone's network changes.
+additional_redirect_urls = [
+  "http://localhost:5173/**",
+  "https://protein-pound.vercel.app/**",
+  "proteinpound://**",
+  "exp://**",
+]
 jwt_expiry = 3600
 enable_signup = true
+
+# These three provider blocks are local/CLI-facing config only — this file is hand-written
+# because the Supabase CLI isn't linked to the hosted project yet (see the header comment
+# above), so the *actual* live provider toggles/secrets must be set in the Supabase
+# Dashboard under Authentication → Providers until the CLI is linked and `db push`/config
+# push is actually run against the remote project.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+
+[auth.external.apple]
+enabled = true
+client_id = "env(SUPABASE_AUTH_APPLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_APPLE_SECRET)"
+
+[auth.external.facebook]
+enabled = true
+client_id = "env(SUPABASE_AUTH_FACEBOOK_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_FACEBOOK_SECRET)"
 
 [edge_runtime]
 enabled = true
@@ -40,4 +67,9 @@ verify_jwt = true
 # Stripe calls this directly and can't send a Supabase JWT — the Stripe signature check
 # inside the function itself is what authenticates the caller instead.
 [functions.stripe-webhook]
+verify_jwt = false
+
+# Cron-triggered (see the pg_cron scheduling migration), not user-triggered — same
+# reasoning as stripe-webhook, with a shared-secret header standing in for auth instead.
+[functions.send-trial-reminders]
 verify_jwt = false
