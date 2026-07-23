@@ -29,9 +29,10 @@ export function LandingPage() {
           <AuthForm />
         </div>
       </div>
-      {/* Static, not absolutely pinned to the viewport bottom — with the OAuth buttons added,
-          the row can be taller than 100vh on shorter windows, and an absolute-bottom footer
-          would just get pushed off-screen below the fold instead of following the content. */}
+      {/* Last child of a fixed-height (100vh) flex column — .landing-row above is flex:1 and
+          centers the hero/card within the *remaining* space, so this always sits flush at the
+          actual bottom of the viewport rather than trailing after content that might be taller
+          than 100vh (which is what broke once the OAuth buttons made the card taller). */}
       <div className="landing-legal">
         <a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a>
       </div>
