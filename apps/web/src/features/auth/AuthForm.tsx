@@ -69,13 +69,13 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
         {OAUTH_PROVIDERS.map((p) => (
           <button
             key={p.id}
             type="button"
             className="bigbtn alt"
-            style={{ width: "100%", fontSize: 13, padding: "8px 0", gap: 8 }}
+            style={{ width: "100%", fontSize: 13, padding: "6px 0", gap: 8 }}
             disabled={busy || oauthBusy !== null}
             onClick={() => handleOAuth(p.id)}
           >
@@ -84,7 +84,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           </button>
         ))}
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 14px", fontSize: 11, color: "var(--faint)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px", fontSize: 11, color: "var(--faint)" }}>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
         or continue with email
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
