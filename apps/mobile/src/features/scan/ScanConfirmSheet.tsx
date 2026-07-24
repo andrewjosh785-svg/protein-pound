@@ -39,6 +39,8 @@ export function ScanConfirmSheet({
   const [servings, setServings] = useState(String(initialServings));
   const [kcal, setKcal] = useState(String(Math.round((prefill?.kcalPerServing ?? 0) * initialServings)));
   const [protein, setProtein] = useState(String(Math.round((prefill?.proteinGPerServing ?? 0) * initialServings)));
+  const [carbs, setCarbs] = useState(String(Math.round((prefill?.carbsGPerServing ?? 0) * initialServings)));
+  const [fat, setFat] = useState(String(Math.round((prefill?.fatGPerServing ?? 0) * initialServings)));
   const [cost, setCost] = useState("");
   const [day, setDay] = useState<DayOfWeek>(todayAsDayOfWeek());
 
@@ -48,6 +50,8 @@ export function ScanConfirmSheet({
     const n = Math.max(0, Number(value) || 0);
     setKcal(String(Math.round(prefill.kcalPerServing * n)));
     setProtein(String(Math.round(prefill.proteinGPerServing * n)));
+    if (prefill.carbsGPerServing !== null) setCarbs(String(Math.round(prefill.carbsGPerServing * n)));
+    if (prefill.fatGPerServing !== null) setFat(String(Math.round(prefill.fatGPerServing * n)));
   };
 
   const handleLog = () => {
@@ -59,6 +63,8 @@ export function ScanConfirmSheet({
           name: name.trim(),
           kcal: Math.max(0, Number(kcal) || 0),
           proteinG: Math.max(0, Number(protein) || 0),
+          carbsG: Math.max(0, Number(carbs) || 0),
+          fatG: Math.max(0, Number(fat) || 0),
           cost: Math.max(0, Number(cost) || 0),
         },
       },
@@ -100,6 +106,17 @@ export function ScanConfirmSheet({
         <View style={styles.flex1}>
           <Text style={styles.fieldLabel}>Total cost (£)</Text>
           <TextInput style={styles.input} keyboardType="decimal-pad" value={cost} onChangeText={setCost} placeholder="0.00" />
+        </View>
+      </View>
+
+      <View style={styles.row3}>
+        <View style={styles.flex1}>
+          <Text style={styles.fieldLabel}>Carbs (g)</Text>
+          <TextInput style={styles.input} keyboardType="number-pad" value={carbs} onChangeText={setCarbs} />
+        </View>
+        <View style={styles.flex1}>
+          <Text style={styles.fieldLabel}>Fat (g)</Text>
+          <TextInput style={styles.input} keyboardType="number-pad" value={fat} onChangeText={setFat} />
         </View>
       </View>
 

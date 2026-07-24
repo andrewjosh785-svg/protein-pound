@@ -8,10 +8,18 @@ export function useSnackPresets() {
     queryFn: async (): Promise<SnackPreset[]> => {
       const { data, error } = await supabase
         .from("snack_presets")
-        .select("id, name, kcal, protein_g, cost")
+        .select("id, name, kcal, protein_g, carbs_g, fat_g, cost")
         .order("sort_order");
       if (error) throw new Error(error.message);
-      return data.map((r) => ({ id: r.id, name: r.name, kcal: r.kcal, proteinG: r.protein_g, cost: r.cost }));
+      return data.map((r) => ({
+        id: r.id,
+        name: r.name,
+        kcal: r.kcal,
+        proteinG: r.protein_g,
+        carbsG: r.carbs_g,
+        fatG: r.fat_g,
+        cost: r.cost,
+      }));
     },
   });
 }

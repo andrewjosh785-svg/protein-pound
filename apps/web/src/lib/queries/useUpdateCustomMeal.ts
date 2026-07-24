@@ -23,6 +23,8 @@ export function useUpdateCustomMeal() {
           name: meal.name,
           servings: meal.servings,
           protein_g: meal.proteinG,
+          carbs_g: meal.carbsG,
+          fat_g: meal.fatG,
           kcal: meal.kcal,
           is_veggie: meal.isVeggie,
           time_label: meal.timeLabel,

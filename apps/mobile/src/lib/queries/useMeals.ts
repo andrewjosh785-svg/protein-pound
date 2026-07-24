@@ -9,6 +9,8 @@ interface RawMealRow {
   name: string;
   servings: number;
   protein_g: number;
+  carbs_g: number;
+  fat_g: number;
   kcal: number;
   is_veggie: boolean;
   time_label: string | null;
@@ -26,7 +28,7 @@ interface RawMealRow {
 }
 
 const MEAL_SELECT =
-  "id, slug, name, servings, protein_g, kcal, is_veggie, time_label, description, method, source, owner_id, category, " +
+  "id, slug, name, servings, protein_g, carbs_g, fat_g, kcal, is_veggie, time_label, description, method, source, owner_id, category, " +
   "meal_ingredients(ingredient_id, pack_fraction, human_quantity, sort_order)";
 
 export function useMeals() {
@@ -42,6 +44,8 @@ export function useMeals() {
         name: row.name,
         servings: row.servings,
         proteinG: row.protein_g,
+        carbsG: row.carbs_g,
+        fatG: row.fat_g,
         kcal: row.kcal,
         isVeggie: row.is_veggie,
         timeLabel: row.time_label,

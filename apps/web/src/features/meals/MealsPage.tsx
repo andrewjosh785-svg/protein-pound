@@ -364,6 +364,12 @@ function MealCard({
             <b>{meal.proteinG}g</b> protein / serving
           </span>
           <span>
+            <b>{meal.carbsG}g</b> carbs
+          </span>
+          <span>
+            <b>{meal.fatG}g</b> fat
+          </span>
+          <span>
             <b>{meal.kcal}</b> kcal
           </span>
           {meal.timeLabel && (
@@ -405,7 +411,9 @@ function MealCard({
             <div className="tcard" style={{ marginBottom: 12, fontSize: 12.5 }}>
               For {scaleServings} servings: <b>{money(perServing * scaleServings)}</b> total ·{" "}
               <b>{Math.round(meal.kcal * scaleServings).toLocaleString()}</b> kcal ·{" "}
-              <b>{Math.round(meal.proteinG * scaleServings)}g</b> protein
+              <b>{Math.round(meal.proteinG * scaleServings)}g</b> protein ·{" "}
+              <b>{Math.round(meal.carbsG * scaleServings)}g</b> carbs ·{" "}
+              <b>{Math.round(meal.fatG * scaleServings)}g</b> fat
             </div>
           )}
           <ul>

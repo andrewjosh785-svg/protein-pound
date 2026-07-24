@@ -106,6 +106,8 @@ export function WeekPage() {
   const [qName, setQName] = useState("");
   const [qKcal, setQKcal] = useState("300");
   const [qProtein, setQProtein] = useState("10");
+  const [qCarbs, setQCarbs] = useState("0");
+  const [qFat, setQFat] = useState("0");
   const [qCost, setQCost] = useState("1.5");
   const [copied, setCopied] = useState(false);
   const [scanFlow, setScanFlow] = useState<ScanFlow | null>(null);
@@ -245,6 +247,8 @@ export function WeekPage() {
         name: qName.trim(),
         kcal: Math.max(0, Number(qKcal) || 0),
         proteinG: Math.max(0, Number(qProtein) || 0),
+        carbsG: Math.max(0, Number(qCarbs) || 0),
+        fatG: Math.max(0, Number(qFat) || 0),
         cost: Math.max(0, Number(qCost) || 0),
       },
     });
@@ -322,6 +326,16 @@ export function WeekPage() {
           <View style={styles.flex1}>
             <Text style={styles.fieldLabel}>Cost (£)</Text>
             <TextInput style={styles.input} keyboardType="decimal-pad" value={qCost} onChangeText={setQCost} />
+          </View>
+        </View>
+        <View style={styles.row3}>
+          <View style={styles.flex1}>
+            <Text style={styles.fieldLabel}>Carbs (g)</Text>
+            <TextInput style={styles.input} keyboardType="number-pad" value={qCarbs} onChangeText={setQCarbs} />
+          </View>
+          <View style={styles.flex1}>
+            <Text style={styles.fieldLabel}>Fat (g)</Text>
+            <TextInput style={styles.input} keyboardType="number-pad" value={qFat} onChangeText={setQFat} />
           </View>
         </View>
         <View style={styles.quickAddActionsRow}>
@@ -646,7 +660,14 @@ function DayCard({
             onPress={() =>
               logEntries.addEntry.mutate({
                 day,
-                item: { name: extra.name, kcal: extra.kcal, proteinG: extra.proteinG, cost: extra.cost },
+                item: {
+                  name: extra.name,
+                  kcal: extra.kcal,
+                  proteinG: extra.proteinG,
+                  carbsG: extra.carbsG,
+                  fatG: extra.fatG,
+                  cost: extra.cost,
+                },
               })
             }
           >
@@ -677,7 +698,15 @@ function DayCard({
             if (preset) {
               logEntries.addEntry.mutate({
                 day,
-                item: { name: preset.name, kcal: preset.kcal, proteinG: preset.proteinG, cost: preset.cost, snackPresetId: preset.id },
+                item: {
+                  name: preset.name,
+                  kcal: preset.kcal,
+                  proteinG: preset.proteinG,
+                  carbsG: preset.carbsG,
+                  fatG: preset.fatG,
+                  cost: preset.cost,
+                  snackPresetId: preset.id,
+                },
               });
             }
             setQuickAddValue("");

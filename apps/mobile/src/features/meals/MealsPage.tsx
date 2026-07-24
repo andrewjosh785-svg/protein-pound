@@ -315,6 +315,12 @@ function MealCard({
           <Text style={styles.statBold}>{meal.proteinG}g</Text> protein / serving
         </Text>
         <Text style={styles.statText}>
+          <Text style={styles.statBold}>{meal.carbsG}g</Text> carbs
+        </Text>
+        <Text style={styles.statText}>
+          <Text style={styles.statBold}>{meal.fatG}g</Text> fat
+        </Text>
+        <Text style={styles.statText}>
           <Text style={styles.statBold}>{meal.kcal}</Text> kcal
         </Text>
         {!!meal.timeLabel && <Text style={styles.statText}>{meal.timeLabel}</Text>}
@@ -349,7 +355,8 @@ function MealCard({
           {isScaled && (
             <Text style={styles.scaledNote}>
               For {scaleNum} servings: {money(perServing * scaleNum)} total ·{" "}
-              {Math.round(meal.kcal * scaleNum).toLocaleString()} kcal · {Math.round(meal.proteinG * scaleNum)}g protein
+              {Math.round(meal.kcal * scaleNum).toLocaleString()} kcal · {Math.round(meal.proteinG * scaleNum)}g protein ·{" "}
+              {Math.round(meal.carbsG * scaleNum)}g carbs · {Math.round(meal.fatG * scaleNum)}g fat
             </Text>
           )}
           {meal.ingredients.map((use) => {

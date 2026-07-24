@@ -6,6 +6,8 @@ export interface NewLogItem {
   name: string;
   kcal: number;
   proteinG: number;
+  carbsG: number;
+  fatG: number;
   cost: number;
   snackPresetId?: string | null;
 }
@@ -20,7 +22,7 @@ export function useLogEntries(planId: string | undefined) {
     queryFn: async (): Promise<LogEntry[]> => {
       const { data, error } = await supabase
         .from("log_entries")
-        .select("id, day_of_week, name, kcal, protein_g, cost, quantity, snack_preset_id")
+        .select("id, day_of_week, name, kcal, protein_g, carbs_g, fat_g, cost, quantity, snack_preset_id")
         .eq("plan_id", planId!);
       if (error) throw new Error(error.message);
       return data.map((r) => ({
@@ -29,6 +31,8 @@ export function useLogEntries(planId: string | undefined) {
         name: r.name,
         kcal: r.kcal,
         proteinG: r.protein_g,
+        carbsG: r.carbs_g,
+        fatG: r.fat_g,
         cost: r.cost,
         quantity: r.quantity,
         snackPresetId: r.snack_preset_id,
@@ -53,6 +57,8 @@ export function useLogEntries(planId: string | undefined) {
           name: item.name,
           kcal: item.kcal,
           protein_g: item.proteinG,
+          carbs_g: item.carbsG,
+          fat_g: item.fatG,
           cost: item.cost,
           quantity: 1,
           source: item.snackPresetId ? "snack_preset" : "custom",

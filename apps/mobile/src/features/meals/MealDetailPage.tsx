@@ -82,6 +82,12 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
           <Text style={styles.statBold}>{meal.proteinG}g</Text> protein / serving
         </Text>
         <Text style={styles.statText}>
+          <Text style={styles.statBold}>{meal.carbsG}g</Text> carbs
+        </Text>
+        <Text style={styles.statText}>
+          <Text style={styles.statBold}>{meal.fatG}g</Text> fat
+        </Text>
+        <Text style={styles.statText}>
           <Text style={styles.statBold}>{meal.kcal}</Text> kcal
         </Text>
         {!!meal.timeLabel && <Text style={styles.statText}>{meal.timeLabel}</Text>}
@@ -115,7 +121,8 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
         {isScaled && (
           <Text style={styles.scaledNote}>
             For {servings} servings: {money(perServing * servings)} total ·{" "}
-            {Math.round(meal.kcal * servings).toLocaleString()} kcal · {Math.round(meal.proteinG * servings)}g protein
+            {Math.round(meal.kcal * servings).toLocaleString()} kcal · {Math.round(meal.proteinG * servings)}g protein ·{" "}
+            {Math.round(meal.carbsG * servings)}g carbs · {Math.round(meal.fatG * servings)}g fat
           </Text>
         )}
         {meal.ingredients.map((use) => {

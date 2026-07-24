@@ -46,6 +46,8 @@ export interface Meal {
   name: string;
   servings: number;
   proteinG: number;
+  carbsG: number;
+  fatG: number;
   kcal: number;
   isVeggie: boolean;
   timeLabel: string | null;
@@ -62,6 +64,8 @@ export interface SnackPreset {
   name: string;
   kcal: number;
   proteinG: number;
+  carbsG: number;
+  fatG: number;
   cost: number;
 }
 
@@ -91,6 +95,8 @@ export interface LogEntry {
   name: string;
   kcal: number;
   proteinG: number;
+  carbsG: number;
+  fatG: number;
   cost: number;
   quantity: number;
   snackPresetId: string | null;

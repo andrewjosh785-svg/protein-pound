@@ -32,6 +32,8 @@ interface GeneratedRecipe {
   desc: string;
   servings: number;
   protein: number;
+  carbs: number;
+  fat: number;
   kcal: number;
   veggie: boolean;
   time: string;
@@ -121,7 +123,7 @@ Deno.serve(async (req) => {
   // strings with special characters have been unreliable to paste into the dashboard's
   // browser-based function editor.
   const responseSchema =
-    '{"name": string, "desc": string (one appetising sentence), "servings": int, "protein": int (grams per serving), "kcal": int (per serving), "veggie": bool, "time": string (e.g. "30 min"), "category": string (one of "breakfast", "lunch", "dinner", "snack", "dessert" - whichever best fits the recipe), "uses": [[ingredientKey, fractionOfPackUsedByWholeRecipe, humanQuantity]], "method": [4-6 short cooking steps]}';
+    '{"name": string, "desc": string (one appetising sentence), "servings": int, "protein": int (grams per serving), "carbs": int (grams per serving), "fat": int (grams per serving), "kcal": int (per serving), "veggie": bool, "time": string (e.g. "30 min"), "category": string (one of "breakfast", "lunch", "dinner", "snack", "dessert" - whichever best fits the recipe), "uses": [[ingredientKey, fractionOfPackUsedByWholeRecipe, humanQuantity]], "method": [4-6 short cooking steps]}';
   const usageRules =
     'Rules: fractions are of the stated pack size and cover the WHOLE recipe (all servings), e.g. 600g from a 1kg pack = 0.6, 2 tins = 2. humanQuantity is the real-world amount like "400g" or "2 tins" or "4 eggs". Keep macros realistic for the quantities used. Only use ingredient keys from the list above.';
 
@@ -134,6 +136,8 @@ Deno.serve(async (req) => {
         "Name: " + editMeal.name,
         "Servings: " + editMeal.servings,
         "Protein per serving: " + editMeal.protein + "g",
+        "Carbs per serving: " + editMeal.carbs + "g",
+        "Fat per serving: " + editMeal.fat + "g",
         "Kcal per serving: " + editMeal.kcal,
         "Vegetarian: " + editMeal.veggie,
         "Time: " + editMeal.time,
@@ -189,6 +193,8 @@ Deno.serve(async (req) => {
       desc: String(parsed.desc || "AI-generated recipe."),
       servings: Math.max(1, Math.round(Number(parsed.servings) || 2)),
       protein: Math.max(0, Math.round(Number(parsed.protein) || 0)),
+      carbs: Math.max(0, Math.round(Number(parsed.carbs) || 0)),
+      fat: Math.max(0, Math.round(Number(parsed.fat) || 0)),
       kcal: Math.max(0, Math.round(Number(parsed.kcal) || 0)),
       veggie: !!parsed.veggie,
       time: String(parsed.time || "—"),

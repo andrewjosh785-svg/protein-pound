@@ -53,6 +53,8 @@ export function proteinPerPound(perServingCost: number, proteinG: number): numbe
 export interface DayStats {
   kcal: number;
   proteinG: number;
+  carbsG: number;
+  fatG: number;
   mealCost: number;
   extraCost: number;
   count: number;
@@ -67,6 +69,8 @@ export function computeDayStats(
 ): DayStats {
   let kcal = 0,
     proteinG = 0,
+    carbsG = 0,
+    fatG = 0,
     mealCost = 0,
     extraCost = 0,
     count = 0;
@@ -77,6 +81,8 @@ export function computeDayStats(
     if (!meal) continue;
     kcal += meal.kcal * entry.servings;
     proteinG += meal.proteinG * entry.servings;
+    carbsG += meal.carbsG * entry.servings;
+    fatG += meal.fatG * entry.servings;
     // Grocery totals always use the cheapest-mix price, independent of the meal browser's store filter.
     mealCost += mealCostPerServing(meal, prices, null) * entry.servings;
     count += entry.servings;
@@ -86,11 +92,13 @@ export function computeDayStats(
     if (log.dayOfWeek !== dayOfWeek) continue;
     kcal += log.kcal * log.quantity;
     proteinG += log.proteinG * log.quantity;
+    carbsG += log.carbsG * log.quantity;
+    fatG += log.fatG * log.quantity;
     extraCost += log.cost * log.quantity;
     count += log.quantity;
   }
 
-  return { kcal, proteinG, mealCost, extraCost, count };
+  return { kcal, proteinG, carbsG, fatG, mealCost, extraCost, count };
 }
 
 export interface ShoppingListItem {

@@ -111,6 +111,12 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
           <b>{meal.proteinG}g</b> protein / serving
         </span>
         <span>
+          <b>{meal.carbsG}g</b> carbs
+        </span>
+        <span>
+          <b>{meal.fatG}g</b> fat
+        </span>
+        <span>
           <b>{meal.kcal}</b> kcal
         </span>
         {meal.timeLabel && (
@@ -151,7 +157,9 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
           <div className="tcard" style={{ marginBottom: 12, fontSize: 12.5 }}>
             For {servings} servings: <b>{money(perServing * servings)}</b> total ·{" "}
             <b>{Math.round(meal.kcal * servings).toLocaleString()}</b> kcal ·{" "}
-            <b>{Math.round(meal.proteinG * servings)}g</b> protein
+            <b>{Math.round(meal.proteinG * servings)}g</b> protein ·{" "}
+            <b>{Math.round(meal.carbsG * servings)}g</b> carbs ·{" "}
+            <b>{Math.round(meal.fatG * servings)}g</b> fat
           </div>
         )}
         <ul>

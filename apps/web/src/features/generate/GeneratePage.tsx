@@ -138,6 +138,12 @@ export function GeneratePage() {
                 <b>{meal.proteinG}g</b> protein / serving
               </span>
               <span>
+                <b>{meal.carbsG}g</b> carbs
+              </span>
+              <span>
+                <b>{meal.fatG}g</b> fat
+              </span>
+              <span>
                 <b>{meal.kcal}</b> kcal
               </span>
               <span>

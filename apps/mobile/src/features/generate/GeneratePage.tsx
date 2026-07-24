@@ -126,6 +126,12 @@ export function GeneratePage() {
               <Text style={styles.statBold}>{meal.proteinG}g</Text> protein / serving
             </Text>
             <Text style={styles.statText}>
+              <Text style={styles.statBold}>{meal.carbsG}g</Text> carbs
+            </Text>
+            <Text style={styles.statText}>
+              <Text style={styles.statBold}>{meal.fatG}g</Text> fat
+            </Text>
+            <Text style={styles.statText}>
               <Text style={styles.statBold}>{meal.kcal}</Text> kcal
             </Text>
             <Text style={styles.statText}>{meal.timeLabel}</Text>

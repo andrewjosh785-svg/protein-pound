@@ -8,6 +8,8 @@ export interface GeneratedRecipeResult {
   desc: string;
   servings: number;
   protein: number;
+  carbs: number;
+  fat: number;
   kcal: number;
   veggie: boolean;
   time: string;

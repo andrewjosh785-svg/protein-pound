@@ -23,6 +23,8 @@ const emptyForm = () => ({
   name: "",
   servings: 2,
   protein: 25,
+  carbs: 40,
+  fat: 15,
   kcal: 450,
   veggie: false,
   category: "dinner" as MealCategory,
@@ -45,6 +47,8 @@ export function RecipeBuilderPage({
   const [name, setName] = useState("");
   const [servings, setServings] = useState(2);
   const [protein, setProtein] = useState(25);
+  const [carbs, setCarbs] = useState(40);
+  const [fat, setFat] = useState(15);
   const [kcal, setKcal] = useState(450);
   const [veggie, setVeggie] = useState(false);
   const [category, setCategory] = useState<MealCategory>("dinner");
@@ -58,6 +62,8 @@ export function RecipeBuilderPage({
       setName(editingMeal.name);
       setServings(editingMeal.servings);
       setProtein(editingMeal.proteinG);
+      setCarbs(editingMeal.carbsG);
+      setFat(editingMeal.fatG);
       setKcal(editingMeal.kcal);
       setVeggie(editingMeal.isVeggie);
       setCategory(editingMeal.category);
@@ -70,6 +76,8 @@ export function RecipeBuilderPage({
       setName(blank.name);
       setServings(blank.servings);
       setProtein(blank.protein);
+      setCarbs(blank.carbs);
+      setFat(blank.fat);
       setKcal(blank.kcal);
       setVeggie(blank.veggie);
       setCategory(blank.category);
@@ -110,6 +118,8 @@ export function RecipeBuilderPage({
     name: name.trim() || "My recipe",
     servings: Math.max(1, servings),
     proteinG: Math.max(0, protein),
+    carbsG: Math.max(0, carbs),
+    fatG: Math.max(0, fat),
     kcal: Math.max(0, kcal),
     isVeggie: veggie,
     timeLabel: editingMeal?.timeLabel ?? null,
@@ -193,6 +203,26 @@ export function RecipeBuilderPage({
             min="0"
             value={protein}
             onChange={(e) => setProtein(Number(e.target.value))}
+            style={{ width: 110 }}
+          />
+        </div>
+        <div className="fld">
+          <label>Carbs / serving (g)</label>
+          <input
+            type="number"
+            min="0"
+            value={carbs}
+            onChange={(e) => setCarbs(Number(e.target.value))}
+            style={{ width: 110 }}
+          />
+        </div>
+        <div className="fld">
+          <label>Fat / serving (g)</label>
+          <input
+            type="number"
+            min="0"
+            value={fat}
+            onChange={(e) => setFat(Number(e.target.value))}
             style={{ width: 110 }}
           />
         </div>

@@ -1,11 +1,13 @@
 // Thin fetch wrapper around Open Food Facts' public, no-auth product API. Confirmed the
 // real response shape via a live lookup: { status, product: { product_name, nutriments:
 // { "energy-kcal_100g", "energy-kcal_serving", "proteins_100g", "proteins_serving" },
-// product_quantity, serving_quantity } }. Per-serving fields are used directly when
-// present (most reliable — the label's own stated serving figures, not our guess);
-// otherwise falls back to the per-100g figure scaled by the serving quantity. Open Food
-// Facts has no price data at all — cost is always a manual entry on the confirm screen,
-// never looked up here.
+// product_quantity, serving_quantity } }. carbohydrates_100g/_serving and fat_100g/_serving
+// follow the same documented OFF nutriment naming convention as proteins/energy above, but
+// weren't individually re-verified via a fresh live lookup the way kcal/protein were. Per-
+// serving fields are used directly when present (most reliable — the label's own stated
+// serving figures, not our guess); otherwise falls back to the per-100g figure scaled by
+// the serving quantity. Open Food Facts has no price data at all — cost is always a manual
+// entry on the confirm screen, never looked up here.
 export interface BarcodeLookupResult {
   name: string;
   /** Nutrition for ONE serving, as defined by the product's own label. Null means Open
@@ -14,6 +16,8 @@ export interface BarcodeLookupResult {
    * distinct from a genuine 0 (e.g. water), which is a real reported value. */
   kcalPerServing: number | null;
   proteinGPerServing: number | null;
+  carbsGPerServing: number | null;
+  fatGPerServing: number | null;
   /** How many of those servings make up the whole pack (product_quantity /
    * serving_quantity), so the confirm screen can default to "the whole thing" rather than
    * a single serving — the far more common case when someone scans and finishes a snack
@@ -39,6 +43,8 @@ export async function lookupBarcode(barcode: string): Promise<BarcodeLookupResul
 
   const kcalPerServing = resolveNutrient(nutriments["energy-kcal_serving"], nutriments["energy-kcal_100g"], servingQuantity);
   const proteinGPerServing = resolveNutrient(nutriments["proteins_serving"], nutriments["proteins_100g"], servingQuantity);
+  const carbsGPerServing = resolveNutrient(nutriments["carbohydrates_serving"], nutriments["carbohydrates_100g"], servingQuantity);
+  const fatGPerServing = resolveNutrient(nutriments["fat_serving"], nutriments["fat_100g"], servingQuantity);
 
   const packServings = servingQuantity && packQuantity ? packQuantity / servingQuantity : null;
 
@@ -46,6 +52,8 @@ export async function lookupBarcode(barcode: string): Promise<BarcodeLookupResul
     name,
     kcalPerServing: kcalPerServing === null ? null : Math.round(kcalPerServing),
     proteinGPerServing: proteinGPerServing === null ? null : Math.round(proteinGPerServing),
+    carbsGPerServing: carbsGPerServing === null ? null : Math.round(carbsGPerServing),
+    fatGPerServing: fatGPerServing === null ? null : Math.round(fatGPerServing),
     packServings,
   };
 }

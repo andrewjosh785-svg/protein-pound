@@ -101,6 +101,8 @@ function WeekPlanner() {
   const [qName, setQName] = useState("");
   const [qKcal, setQKcal] = useState(300);
   const [qProtein, setQProtein] = useState(10);
+  const [qCarbs, setQCarbs] = useState(0);
+  const [qFat, setQFat] = useState(0);
   const [qCost, setQCost] = useState(1.5);
   const [copied, setCopied] = useState(false);
 
@@ -204,7 +206,14 @@ function WeekPlanner() {
     if (!qName.trim()) return;
     logEntries.addEntry.mutate({
       day: qDay,
-      item: { name: qName.trim(), kcal: Math.max(0, qKcal), proteinG: Math.max(0, qProtein), cost: Math.max(0, qCost) },
+      item: {
+        name: qName.trim(),
+        kcal: Math.max(0, qKcal),
+        proteinG: Math.max(0, qProtein),
+        carbsG: Math.max(0, qCarbs),
+        fatG: Math.max(0, qFat),
+        cost: Math.max(0, qCost),
+      },
     });
     setQName("");
   };
@@ -329,6 +338,14 @@ function WeekPlanner() {
             <input type="number" min="0" value={qProtein} onChange={(e) => setQProtein(Number(e.target.value))} />
           </div>
           <div className="fld">
+            <label>Carbs (g)</label>
+            <input type="number" min="0" value={qCarbs} onChange={(e) => setQCarbs(Number(e.target.value))} />
+          </div>
+          <div className="fld">
+            <label>Fat (g)</label>
+            <input type="number" min="0" value={qFat} onChange={(e) => setQFat(Number(e.target.value))} />
+          </div>
+          <div className="fld">
             <label>Cost (£)</label>
             <input type="number" min="0" step="0.1" value={qCost} onChange={(e) => setQCost(Number(e.target.value))} />
           </div>
@@ -420,7 +437,14 @@ function WeekPlanner() {
                       onClick={() =>
                         logEntries.addEntry.mutate({
                           day,
-                          item: { name: extra.name, kcal: extra.kcal, proteinG: extra.proteinG, cost: extra.cost },
+                          item: {
+                            name: extra.name,
+                            kcal: extra.kcal,
+                            proteinG: extra.proteinG,
+                            carbsG: extra.carbsG,
+                            fatG: extra.fatG,
+                            cost: extra.cost,
+                          },
                         })
                       }
                     >
@@ -451,7 +475,15 @@ function WeekPlanner() {
                     if (preset) {
                       logEntries.addEntry.mutate({
                         day,
-                        item: { name: preset.name, kcal: preset.kcal, proteinG: preset.proteinG, cost: preset.cost, snackPresetId: preset.id },
+                        item: {
+                          name: preset.name,
+                          kcal: preset.kcal,
+                          proteinG: preset.proteinG,
+                          carbsG: preset.carbsG,
+                          fatG: preset.fatG,
+                          cost: preset.cost,
+                          snackPresetId: preset.id,
+                        },
                       });
                     }
                     e.target.value = "";

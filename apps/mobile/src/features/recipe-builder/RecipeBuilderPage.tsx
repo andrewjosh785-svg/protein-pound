@@ -30,6 +30,8 @@ const emptyForm = () => ({
   name: "",
   servings: 2,
   protein: 25,
+  carbs: 40,
+  fat: 15,
   kcal: 450,
   veggie: false,
   category: "dinner" as MealCategory,
@@ -52,6 +54,8 @@ export function RecipeBuilderPage({
   const [name, setName] = useState("");
   const [servings, setServings] = useState("2");
   const [protein, setProtein] = useState("25");
+  const [carbs, setCarbs] = useState("40");
+  const [fat, setFat] = useState("15");
   const [kcal, setKcal] = useState("450");
   const [veggie, setVeggie] = useState(false);
   const [category, setCategory] = useState<MealCategory>("dinner");
@@ -63,6 +67,8 @@ export function RecipeBuilderPage({
       setName(editingMeal.name);
       setServings(String(editingMeal.servings));
       setProtein(String(editingMeal.proteinG));
+      setCarbs(String(editingMeal.carbsG));
+      setFat(String(editingMeal.fatG));
       setKcal(String(editingMeal.kcal));
       setVeggie(editingMeal.isVeggie);
       setCategory(editingMeal.category);
@@ -73,6 +79,8 @@ export function RecipeBuilderPage({
       setName(blank.name);
       setServings(String(blank.servings));
       setProtein(String(blank.protein));
+      setCarbs(String(blank.carbs));
+      setFat(String(blank.fat));
       setKcal(String(blank.kcal));
       setVeggie(blank.veggie);
       setCategory(blank.category);
@@ -117,6 +125,8 @@ export function RecipeBuilderPage({
 
   const servingsNum = Math.max(1, Number(servings) || 1);
   const proteinNum = Math.max(0, Number(protein) || 0);
+  const carbsNum = Math.max(0, Number(carbs) || 0);
+  const fatNum = Math.max(0, Number(fat) || 0);
   const kcalNum = Math.max(0, Number(kcal) || 0);
 
   const meal: Meal = {
@@ -125,6 +135,8 @@ export function RecipeBuilderPage({
     name: name.trim() || "My recipe",
     servings: servingsNum,
     proteinG: proteinNum,
+    carbsG: carbsNum,
+    fatG: fatNum,
     kcal: kcalNum,
     isVeggie: veggie,
     timeLabel: editingMeal?.timeLabel ?? null,
@@ -191,6 +203,17 @@ export function RecipeBuilderPage({
         <View style={styles.flex1}>
           <Text style={styles.fieldLabel}>Kcal/serving</Text>
           <TextInput style={styles.input} keyboardType="number-pad" value={kcal} onChangeText={setKcal} />
+        </View>
+      </View>
+
+      <View style={styles.row3}>
+        <View style={styles.flex1}>
+          <Text style={styles.fieldLabel}>Carbs/serving (g)</Text>
+          <TextInput style={styles.input} keyboardType="number-pad" value={carbs} onChangeText={setCarbs} />
+        </View>
+        <View style={styles.flex1}>
+          <Text style={styles.fieldLabel}>Fat/serving (g)</Text>
+          <TextInput style={styles.input} keyboardType="number-pad" value={fat} onChangeText={setFat} />
         </View>
       </View>
 
