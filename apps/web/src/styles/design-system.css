@@ -196,6 +196,8 @@ textarea { font-weight: 400; width: 100%; max-width: 520px; min-height: 90px; }
 .weekgrid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); margin: 6px 0 20px; }
 .daycard { border: 1.5px solid var(--ink); background: var(--surface); display: flex; flex-direction: column; }
 .daycard.over { border-color: var(--deal); }
+.daycard.today { border-color: var(--tag); border-width: 2px; }
+.daycard.over.today { border-color: var(--deal); }
 .dayhead { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 10px 4px; }
 .dayhead .dname { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 20px; text-transform: uppercase; }
 .dayhead .dcost { font-size: 11px; color: var(--muted); }

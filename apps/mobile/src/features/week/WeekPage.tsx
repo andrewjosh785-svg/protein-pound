@@ -19,6 +19,7 @@ import {
   latestPriceCheck,
   money,
   shoppingListTotalsByStore,
+  todayAsDayOfWeek,
   type DayOfWeek,
   type Ingredient,
   type Meal,
@@ -184,6 +185,10 @@ export function WeekPage() {
   const presets = snackPresets.data ?? [];
 
   const dayStats = DAYS.map((day) => computeDayStats(day, entries, extras, mealsById, priceLookup));
+  const todayDow = todayAsDayOfWeek();
+  const todayStats = dayStats[todayDow];
+  const dailyBudget = budget / 7;
+  const todaySpend = todayStats.mealCost + todayStats.extraCost;
   const totalItems = dayStats.reduce((s, d) => s + d.count, 0);
   const plannedIndices = DAYS.filter((_, i) => dayStats[i].count > 0);
   const avgKcal = plannedIndices.length
@@ -246,6 +251,15 @@ export function WeekPage() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
+      <TodaySummary
+        dayLabel={DAY_LABELS[todayDow]}
+        stats={todayStats}
+        kcalTarget={kcalTarget}
+        proteinTarget={proteinTarget}
+        dailyBudget={dailyBudget}
+        spend={todaySpend}
+      />
+
       <View style={styles.targetsRow}>
         <View style={styles.flex1}>
           <Text style={styles.fieldLabel}>Daily calories</Text>
@@ -322,6 +336,7 @@ export function WeekPage() {
         <DayCard
           key={day}
           day={day}
+          isToday={day === todayDow}
           stats={dayStats[day]}
           kcalTarget={kcalTarget}
           proteinTarget={proteinTarget}
@@ -440,6 +455,83 @@ export function WeekPage() {
   );
 }
 
+function TodaySummary({
+  dayLabel,
+  stats,
+  kcalTarget,
+  proteinTarget,
+  dailyBudget,
+  spend,
+}: {
+  dayLabel: string;
+  stats: ReturnType<typeof computeDayStats>;
+  kcalTarget: number;
+  proteinTarget: number;
+  dailyBudget: number;
+  spend: number;
+}) {
+  const kcalOver = stats.kcal > kcalTarget;
+  const proteinBad = stats.proteinG < proteinTarget;
+  const spendOver = spend > dailyBudget;
+
+  return (
+    <View style={styles.todayCard}>
+      <Text style={styles.todayHeading}>Today · {dayLabel}</Text>
+
+      <View style={styles.todayRow}>
+        <Text style={styles.todayLabel}>Calories</Text>
+        <Text style={styles.todayValue}>
+          {stats.kcal.toLocaleString()} / {kcalTarget.toLocaleString()}
+        </Text>
+      </View>
+      <View style={styles.barTrack}>
+        <View
+          style={[
+            styles.barFill,
+            { width: `${Math.min((stats.kcal / Math.max(1, kcalTarget)) * 100, 100)}%`, backgroundColor: kcalOver ? colors.deal : colors.green },
+          ]}
+        />
+      </View>
+
+      <View style={[styles.todayRow, styles.todayRowSpaced]}>
+        <Text style={styles.todayLabel}>Protein</Text>
+        <Text style={styles.todayValue}>
+          {stats.proteinG}g / {proteinTarget}g
+        </Text>
+      </View>
+      <View style={styles.barTrack}>
+        <View
+          style={[
+            styles.barFill,
+            { width: `${Math.min((stats.proteinG / Math.max(1, proteinTarget)) * 100, 100)}%`, backgroundColor: proteinBad ? colors.line : colors.green },
+          ]}
+        />
+      </View>
+
+      <View style={[styles.todayRow, styles.todayRowSpaced]}>
+        <Text style={styles.todayLabel}>Spend</Text>
+        <Text style={styles.todayValue}>
+          {money(spend)} / {money(dailyBudget)}
+        </Text>
+      </View>
+      <View style={styles.barTrack}>
+        <View
+          style={[
+            styles.barFill,
+            { width: `${Math.min((spend / Math.max(0.01, dailyBudget)) * 100, 100)}%`, backgroundColor: spendOver ? colors.deal : colors.green },
+          ]}
+        />
+      </View>
+
+      <Text style={styles.todayCaption}>
+        {stats.count > 0
+          ? `${stats.count} item${stats.count === 1 ? "" : "s"} logged today`
+          : "Nothing logged for today yet — add a meal below or ⚡ quick-add what you ate."}
+      </Text>
+    </View>
+  );
+}
+
 function TargetCard({ label, value, sub, good }: { label: string; value: string; sub: string; good?: boolean }) {
   return (
     <View style={styles.targetCard}>
@@ -452,6 +544,7 @@ function TargetCard({ label, value, sub, good }: { label: string; value: string;
 
 function DayCard({
   day,
+  isToday,
   stats,
   kcalTarget,
   proteinTarget,
@@ -464,6 +557,7 @@ function DayCard({
   logEntries,
 }: {
   day: DayOfWeek;
+  isToday: boolean;
   stats: ReturnType<typeof computeDayStats>;
   kcalTarget: number;
   proteinTarget: number;
@@ -481,9 +575,16 @@ function DayCard({
   const [quickAddValue, setQuickAddValue] = useState("");
 
   return (
-    <View style={[styles.dayCard, over && styles.dayCardOver]}>
+    <View style={[styles.dayCard, isToday && styles.dayCardToday, over && styles.dayCardOver]}>
       <View style={styles.dayHead}>
-        <Text style={styles.dayName}>{DAY_LABELS[day]}</Text>
+        <View style={styles.dayNameRow}>
+          <Text style={styles.dayName}>{DAY_LABELS[day]}</Text>
+          {isToday && (
+            <View style={styles.todayBadge}>
+              <Text style={styles.todayBadgeText}>Today</Text>
+            </View>
+          )}
+        </View>
         {stats.count > 0 && (
           <Text style={styles.dayCost}>
             {money(stats.mealCost + stats.extraCost)}
@@ -628,10 +729,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   scanBtnText: { color: colors.ink, fontSize: 13, fontWeight: "700" },
+  todayCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.ink, borderRadius: 8, padding: 14, marginBottom: 16 },
+  todayHeading: { fontSize: 11, fontWeight: "700", letterSpacing: 0.6, textTransform: "uppercase", color: colors.muted, marginBottom: 10 },
+  todayRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 },
+  todayRowSpaced: { marginTop: 10 },
+  todayLabel: { fontSize: 13, color: colors.ink },
+  todayValue: { fontSize: 13, color: colors.ink, fontWeight: "600" },
+  todayCaption: { fontSize: 11.5, color: colors.muted, marginTop: 10 },
   dayCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line, borderRadius: 8, padding: 12, marginBottom: 10 },
   dayCardOver: { borderColor: colors.deal },
+  dayCardToday: { borderColor: colors.tag, borderWidth: 2 },
   dayHead: { flexDirection: "row", justifyContent: "space-between", marginBottom: 8 },
+  dayNameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   dayName: { fontSize: 14, fontWeight: "800", color: colors.ink },
+  todayBadge: { borderWidth: 1, borderColor: colors.line, borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 },
+  todayBadgeText: { fontSize: 10, fontWeight: "700", color: colors.ink },
   dayCost: { fontSize: 12, color: colors.muted },
   entryRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 6 },
   entryName: { flex: 1, fontSize: 12, color: colors.ink },

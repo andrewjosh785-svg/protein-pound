@@ -9,6 +9,7 @@ import {
   latestPriceCheck,
   money,
   shoppingListTotalsByStore,
+  todayAsDayOfWeek,
   type DayOfWeek,
   type Ingredient,
   type Meal,
@@ -146,6 +147,10 @@ function WeekPlanner() {
   const presets = snackPresets.data ?? [];
 
   const dayStats = DAYS.map((day) => computeDayStats(day, entries, extras, mealsById, priceLookup));
+  const todayDow = todayAsDayOfWeek();
+  const todayStats = dayStats[todayDow];
+  const dailyBudget = budget / 7;
+  const todaySpend = todayStats.mealCost + todayStats.extraCost;
   const totalItems = dayStats.reduce((s, d) => s + d.count, 0);
   const plannedIndices = DAYS.filter((_, i) => dayStats[i].count > 0);
   const avgKcal = plannedIndices.length
@@ -202,19 +207,55 @@ function WeekPlanner() {
     setQName("");
   };
 
-  const kcalBar = (kcal: number) => {
-    const pct = Math.min((kcal / kcalTarget) * 100, 100);
-    const over = kcal > kcalTarget;
-    return (
-      <div className="bar mini">
-        <div className="barfill" style={{ width: `${pct}%`, background: over ? "var(--deal)" : "var(--green)" }} />
-      </div>
-    );
-  };
+  const miniBar = (pct: number, bad: boolean) => (
+    <div className="bar mini">
+      <div className="barfill" style={{ width: `${pct}%`, background: bad ? "var(--deal)" : "var(--green)" }} />
+    </div>
+  );
+  const kcalBar = (kcal: number) => miniBar(Math.min((kcal / kcalTarget) * 100, 100), kcal > kcalTarget);
 
   return (
     <div className="listwrap">
       <h2 className="sr-only">My week</h2>
+
+      <div className="tcard" style={{ marginBottom: 16, maxWidth: 480 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: "uppercase", color: "var(--muted)", marginBottom: 10 }}>
+          Today · {DAY_LABELS[todayDow]}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+          <span>Calories</span>
+          <span>
+            {todayStats.kcal.toLocaleString()} / {kcalTarget.toLocaleString()}
+          </span>
+        </div>
+        {miniBar(Math.min((todayStats.kcal / Math.max(1, kcalTarget)) * 100, 100), todayStats.kcal > kcalTarget)}
+
+        <div style={{ display: "flex", justifyContent: "space-between", margin: "10px 0 2px" }}>
+          <span>Protein</span>
+          <span>
+            {todayStats.proteinG}g / {proteinTarget}g
+          </span>
+        </div>
+        {miniBar(
+          Math.min((todayStats.proteinG / Math.max(1, proteinTarget)) * 100, 100),
+          todayStats.proteinG < proteinTarget
+        )}
+
+        <div style={{ display: "flex", justifyContent: "space-between", margin: "10px 0 2px" }}>
+          <span>Spend</span>
+          <span>
+            {money(todaySpend)} / {money(dailyBudget)}
+          </span>
+        </div>
+        {miniBar(Math.min((todaySpend / Math.max(0.01, dailyBudget)) * 100, 100), todaySpend > dailyBudget)}
+
+        <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 10 }}>
+          {todayStats.count > 0
+            ? `${todayStats.count} item${todayStats.count === 1 ? "" : "s"} logged today`
+            : "Nothing logged for today yet — add a meal below or ⚡ quick-add what you ate."}
+        </div>
+      </div>
+
       <div className="fldrow">
         <div className="fld">
           <label>Daily calorie target</label>
@@ -302,11 +343,15 @@ function WeekPlanner() {
           const remaining = kcalTarget - stats.kcal;
           const dayEntries = entries.filter((e) => e.dayOfWeek === day);
           const dayExtras = extras.filter((e) => e.dayOfWeek === day);
+          const isToday = day === todayDow;
 
           return (
-            <div className={"daycard " + (over ? "over" : "")} key={day}>
+            <div className={"daycard " + (over ? "over" : "") + (isToday ? " today" : "")} key={day}>
               <div className="dayhead">
-                <span className="dname">{DAY_LABELS[day]}</span>
+                <span className="dname">
+                  {DAY_LABELS[day]}
+                  {isToday && <span className="badge" style={{ marginLeft: 6 }}>Today</span>}
+                </span>
                 {stats.count > 0 && (
                   <span className="dcost">
                     {money(stats.mealCost + stats.extraCost)}

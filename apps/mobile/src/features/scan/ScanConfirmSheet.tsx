@@ -6,17 +6,12 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { DAY_LABELS, type DayOfWeek } from "@protein-pound/shared";
+import { DAY_LABELS, todayAsDayOfWeek, type DayOfWeek } from "@protein-pound/shared";
 import type { BarcodeLookupResult } from "../../lib/openFoodFacts";
 import { useLogEntries } from "../../lib/queries/useLogEntries";
 import { colors } from "../../theme/tokens";
 
 const DAYS: DayOfWeek[] = [0, 1, 2, 3, 4, 5, 6];
-
-function todayAsDayOfWeek(): DayOfWeek {
-  const jsDay = new Date().getDay(); // 0 = Sun .. 6 = Sat
-  return (jsDay === 0 ? 6 : jsDay - 1) as DayOfWeek; // convert to 0 = Mon .. 6 = Sun
-}
 
 export function ScanConfirmSheet({
   barcode,
