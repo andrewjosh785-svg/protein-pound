@@ -33,6 +33,7 @@ import { useSnackPresets } from "../../lib/queries/useSnackPresets";
 import { useMeals } from "../../lib/queries/useMeals";
 import { useIngredients } from "../../lib/queries/useIngredients";
 import { useStoresAndPrices } from "../../lib/queries/useStoresAndPrices";
+import { useCopyLastWeek } from "../../lib/queries/useCopyLastWeek";
 import { BarcodeScannerScreen } from "../scan/BarcodeScannerScreen";
 import { ScanConfirmSheet } from "../scan/ScanConfirmSheet";
 import type { BarcodeLookupResult } from "../../lib/openFoodFacts";
@@ -95,6 +96,7 @@ export function WeekPage() {
   const mealsQuery = useMeals();
   const ingredientsQuery = useIngredients();
   const storesQuery = useStoresAndPrices();
+  const copyLastWeek = useCopyLastWeek(planId);
 
   const [kcalTargetInput, setKcalTargetInput] = useState("2000");
   const [proteinTargetInput, setProteinTargetInput] = useState("120");
@@ -349,6 +351,24 @@ export function WeekPage() {
           logEntries={logEntries}
         />
       ))}
+
+      {entries.length === 0 && (
+        <View style={styles.copyLastWeekBox}>
+          <Text style={styles.emptyText}>No meals planned this week yet.</Text>
+          <Pressable
+            style={[styles.actionPill, copyLastWeek.isPending && { opacity: 0.6 }]}
+            onPress={() => copyLastWeek.mutate()}
+            disabled={copyLastWeek.isPending}
+          >
+            <Text style={styles.actionPillText}>{copyLastWeek.isPending ? "Copying…" : "Copy last week's plan"}</Text>
+          </Pressable>
+          {copyLastWeek.isError && (
+            <Text style={styles.badText}>
+              {copyLastWeek.error instanceof Error ? copyLastWeek.error.message : "Couldn't copy last week."}
+            </Text>
+          )}
+        </View>
+      )}
 
       {totalItems === 0 ? (
         <Text style={styles.emptyText}>
@@ -761,6 +781,7 @@ const styles = StyleSheet.create({
   okText: { color: colors.green },
   badText: { color: colors.deal },
   emptyText: { fontSize: 13, color: colors.muted, marginVertical: 16, textAlign: "center" },
+  copyLastWeekBox: { alignItems: "center", gap: 8, marginBottom: 4 },
   targetCardsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 },
   targetCard: { flexBasis: "47%", flexGrow: 1, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line, borderRadius: 8, padding: 10 },
   targetLabel: { fontSize: 10, color: colors.muted, marginBottom: 4 },

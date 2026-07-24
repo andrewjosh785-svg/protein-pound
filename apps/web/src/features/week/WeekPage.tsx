@@ -23,6 +23,7 @@ import { useSnackPresets } from "../../lib/queries/useSnackPresets";
 import { useMeals } from "../../lib/queries/useMeals";
 import { useIngredients } from "../../lib/queries/useIngredients";
 import { useStoresAndPrices } from "../../lib/queries/useStoresAndPrices";
+import { useCopyLastWeek } from "../../lib/queries/useCopyLastWeek";
 
 const DAYS: DayOfWeek[] = [0, 1, 2, 3, 4, 5, 6];
 
@@ -90,6 +91,7 @@ function WeekPlanner() {
   const mealsQuery = useMeals();
   const ingredientsQuery = useIngredients();
   const storesQuery = useStoresAndPrices();
+  const copyLastWeek = useCopyLastWeek(planId);
 
   const [kcalTargetInput, setKcalTargetInput] = useState(2000);
   const [proteinTargetInput, setProteinTargetInput] = useState(120);
@@ -484,6 +486,22 @@ function WeekPlanner() {
           );
         })}
       </div>
+
+      {entries.length === 0 && (
+        <div className="empty" style={{ marginBottom: totalItems === 0 ? 12 : 0 }}>
+          <div style={{ marginBottom: copyLastWeek.isError ? 8 : 0 }}>
+            No meals planned this week yet.{" "}
+            <button className="pill" onClick={() => copyLastWeek.mutate()} disabled={copyLastWeek.isPending}>
+              {copyLastWeek.isPending ? "Copying…" : "Copy last week's plan"}
+            </button>
+          </div>
+          {copyLastWeek.isError && (
+            <div className="bad" style={{ fontSize: 12.5 }}>
+              {copyLastWeek.error instanceof Error ? copyLastWeek.error.message : "Couldn't copy last week."}
+            </div>
+          )}
+        </div>
+      )}
 
       {totalItems === 0 ? (
         <div className="empty">
