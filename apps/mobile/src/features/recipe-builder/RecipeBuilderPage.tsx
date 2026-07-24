@@ -191,29 +191,30 @@ export function RecipeBuilderPage({
       <Text style={styles.fieldLabel}>Recipe name</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="e.g. Mum's chicken curry" />
 
-      <View style={styles.row3}>
+      <Text style={styles.fieldLabel}>Servings</Text>
+      <TextInput
+        style={[styles.input, styles.servingsInput]}
+        keyboardType="number-pad"
+        value={servings}
+        onChangeText={setServings}
+      />
+
+      <View style={styles.row4}>
         <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>Servings</Text>
-          <TextInput style={styles.input} keyboardType="number-pad" value={servings} onChangeText={setServings} />
-        </View>
-        <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>Protein/serving (g)</Text>
+          <Text style={styles.fieldLabel}>Protein (g)</Text>
           <TextInput style={styles.input} keyboardType="number-pad" value={protein} onChangeText={setProtein} />
         </View>
         <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>Kcal/serving</Text>
-          <TextInput style={styles.input} keyboardType="number-pad" value={kcal} onChangeText={setKcal} />
-        </View>
-      </View>
-
-      <View style={styles.row3}>
-        <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>Carbs/serving (g)</Text>
+          <Text style={styles.fieldLabel}>Carbs (g)</Text>
           <TextInput style={styles.input} keyboardType="number-pad" value={carbs} onChangeText={setCarbs} />
         </View>
         <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>Fat/serving (g)</Text>
+          <Text style={styles.fieldLabel}>Fat (g)</Text>
           <TextInput style={styles.input} keyboardType="number-pad" value={fat} onChangeText={setFat} />
+        </View>
+        <View style={styles.flex1}>
+          <Text style={styles.fieldLabel}>Kcal</Text>
+          <TextInput style={styles.input} keyboardType="number-pad" value={kcal} onChangeText={setKcal} />
         </View>
       </View>
 
@@ -340,7 +341,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   row3: { flexDirection: "row", gap: 10 },
+  row4: { flexDirection: "row", gap: 8 },
   flex1: { flex: 1 },
+  servingsInput: { width: 90 },
   pillRow: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   pill: { alignSelf: "flex-start", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: colors.ink },
   pillOn: { backgroundColor: colors.ink },

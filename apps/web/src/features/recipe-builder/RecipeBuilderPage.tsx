@@ -196,6 +196,9 @@ export function RecipeBuilderPage({
             style={{ width: 110 }}
           />
         </div>
+      </div>
+
+      <div className="fldrow">
         <div className="fld">
           <label>Protein / serving (g)</label>
           <input
@@ -236,6 +239,9 @@ export function RecipeBuilderPage({
             style={{ width: 110 }}
           />
         </div>
+      </div>
+
+      <div className="fldrow">
         <div className="fld">
           <label>Vegetarian</label>
           <button className={"pill " + (veggie ? "on" : "")} onClick={() => setVeggie(!veggie)} style={{ width: 110 }}>
