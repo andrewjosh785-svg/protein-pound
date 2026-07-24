@@ -242,10 +242,6 @@ async function callGemini(geminiPrompt: string): Promise<Response> {
           generationConfig: {
             maxOutputTokens: 2048,
             responseMimeType: "application/json",
-            // Flash models think by default, which can burn the whole token budget on
-            // internal reasoning before writing any JSON, truncating the actual response.
-            // Not needed for a deterministic recipe-formatting task.
-            thinkingConfig: { thinkingBudget: 0 },
           },
         }),
       }
