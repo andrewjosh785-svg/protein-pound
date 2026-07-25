@@ -167,6 +167,19 @@ export function RecipeBuilderPage({
   const perServing = meal.servings > 0 ? cheapestCost / meal.servings : 0;
   const valuePerPound = proteinPerPound(perServing, meal.proteinG);
 
+  // Same cheapest store, but rounding each ingredient up to whole packs — what you'd actually
+  // pay buying everything fresh for just this recipe, with nothing shared or reused elsewhere.
+  const cheapestStore = storeCosts.find((s) => s.cost === cheapestCost)?.store;
+  const standaloneCost = cheapestStore
+    ? meal.ingredients.reduce(
+        (sum, use) => sum + (priceLookup.get(use.ingredientId)?.get(cheapestStore.id) ?? 0) * Math.ceil(use.packFraction),
+        0
+      )
+    : 0;
+  const standalonePerServing = meal.servings > 0 ? standaloneCost / meal.servings : 0;
+  const standaloneDiff = standalonePerServing - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
+
   const isEditing = editingMeal !== null;
   const activeMutation = isEditing ? update : save;
 
@@ -285,7 +298,7 @@ export function RecipeBuilderPage({
               </View>
             ))}
           </View>
-          <Text style={styles.summaryText}>
+          <Text style={[styles.summaryText, showStandalone && { marginBottom: 2 }]}>
             At the cheapest store that's <Text style={styles.bold}>{money(perServing)} per serving</Text>
             {meal.proteinG > 0 && (
               <Text>
@@ -294,6 +307,11 @@ export function RecipeBuilderPage({
               </Text>
             )}
           </Text>
+          {showStandalone && (
+            <Text style={styles.standaloneText}>
+              {money(standalonePerServing)} per serving buying everything fresh (whole packs, nothing shared with other meals)
+            </Text>
+          )}
 
           {activeMutation.isError && (
             <Text style={styles.errorText}>
@@ -375,6 +393,7 @@ const styles = StyleSheet.create({
   totPrice: { fontSize: 18, fontWeight: "800", color: colors.ink },
   totPerServing: { fontSize: 11, color: colors.faint },
   summaryText: { fontSize: 13, color: colors.ink, marginTop: 12, marginBottom: 14 },
+  standaloneText: { fontSize: 11.5, color: colors.faint, marginBottom: 14 },
   bold: { fontWeight: "700" },
   okBold: { fontWeight: "700", color: colors.green },
   errorText: { fontSize: 12.5, color: colors.deal, marginBottom: 10 },

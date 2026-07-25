@@ -46,6 +46,24 @@ export function mealCostPerServing(
   return total / meal.servings;
 }
 
+/**
+ * Like mealCostPerServing, but rounds each ingredient up to whole packs first — i.e. what
+ * you'd actually pay if you bought everything fresh for just this recipe, with nothing
+ * shared or reused across other meals in the week.
+ */
+export function mealCostPerServingStandalone(
+  meal: Meal,
+  prices: PriceLookup,
+  storeId: string | null
+): number {
+  if (meal.servings <= 0) return 0;
+  const total = meal.ingredients.reduce(
+    (sum, use) => sum + ingredientPriceAt(prices, use.ingredientId, storeId) * Math.ceil(use.packFraction),
+    0
+  );
+  return total / meal.servings;
+}
+
 export function proteinPerPound(perServingCost: number, proteinG: number): number {
   return perServingCost > 0 ? proteinG / perServingCost : 0;
 }

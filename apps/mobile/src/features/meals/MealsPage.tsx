@@ -10,6 +10,7 @@ import {
   formatPriceCheckDate,
   latestPriceCheck,
   mealCostPerServing,
+  mealCostPerServingStandalone,
   money,
   packAmountLabel,
   proteinPerPound,
@@ -120,7 +121,8 @@ export function MealsPage({
     .filter((m) => !category || m.category === category)
     .map((m) => {
       const perServing = mealCostPerServing(m, priceLookup, storeId);
-      return { meal: m, perServing, valuePerPound: proteinPerPound(perServing, m.proteinG) };
+      const standalone = mealCostPerServingStandalone(m, priceLookup, storeId);
+      return { meal: m, perServing, standalone, valuePerPound: proteinPerPound(perServing, m.proteinG) };
     });
 
   const sorted = [...rows].sort((a, b) => {
@@ -214,6 +216,7 @@ export function MealsPage({
         <MealCard
           meal={item.meal}
           perServing={item.perServing}
+          standalone={item.standalone}
           valuePerPound={item.valuePerPound}
           isBest={item.meal.id === bestValueMealId && sortBy === "value"}
           storeLabel={storeLabel}
@@ -256,6 +259,7 @@ export function MealsPage({
 function MealCard({
   meal,
   perServing,
+  standalone,
   valuePerPound,
   isBest,
   storeLabel,
@@ -275,6 +279,7 @@ function MealCard({
 }: {
   meal: Meal;
   perServing: number;
+  standalone: number;
   valuePerPound: number;
   isBest: boolean;
   storeLabel: string;
@@ -296,6 +301,8 @@ function MealCard({
   const scaleNum = Math.max(1, Number(scaleServings) || meal.servings);
   const isScaled = scaleNum !== meal.servings;
   const scaleFactor = meal.servings > 0 ? scaleNum / meal.servings : 1;
+  const standaloneDiff = standalone - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
 
   return (
     <View style={styles.card}>
@@ -330,6 +337,9 @@ function MealCard({
         <View>
           <Text style={styles.bigValue}>{money(perServing)}</Text>
           <Text style={styles.smallLabel}>per serving · {storeLabel}</Text>
+          {showStandalone && (
+            <Text style={[styles.smallLabel, styles.faintText]}>{money(standalone)} buying fresh</Text>
+          )}
         </View>
         <View>
           <Text style={styles.bigValue}>{valuePerPound.toFixed(0)}g</Text>

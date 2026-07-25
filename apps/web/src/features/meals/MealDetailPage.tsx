@@ -5,6 +5,7 @@ import {
   formatPriceCheckDate,
   latestPriceCheck,
   mealCostPerServing,
+  mealCostPerServingStandalone,
   money,
   packAmountLabel,
   proteinPerPound,
@@ -81,6 +82,9 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
   const ingredients = ingredientsQuery.data!;
   const priceLookup = buildPriceLookup(prices);
   const perServing = mealCostPerServing(meal, priceLookup, null);
+  const standalone = mealCostPerServingStandalone(meal, priceLookup, null);
+  const standaloneDiff = standalone - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
   const valuePerPound = proteinPerPound(perServing, meal.proteinG);
   const lastChecked = latestPriceCheck(prices);
 
@@ -130,6 +134,11 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
         <div className="sel">
           <div className="big ppp-disp">{money(perServing)}</div>
           <div className="sm">per serving · cheapest mix</div>
+          {showStandalone && (
+            <div className="sm" style={{ color: "var(--faint)" }}>
+              {money(standalone)} buying everything fresh
+            </div>
+          )}
         </div>
         <div className="valcell">
           <div className="big ppp-disp">{valuePerPound.toFixed(0)}g</div>

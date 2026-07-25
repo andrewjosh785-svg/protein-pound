@@ -591,6 +591,10 @@ function WeekPlanner() {
             <div style={{ color: "var(--muted)" }}>
               {money(weekSpend)} of {money(budget)}
             </div>
+            <div style={{ color: "var(--faint)", fontSize: 11.5, marginTop: 4 }}>
+              Groceries round up to whole packs across the week — day-by-day figures below are each
+              day's fractional share, so they won't sum to exactly this total.
+            </div>
           </div>
 
           {shoppingItems.length > 0 && (

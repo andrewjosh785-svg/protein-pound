@@ -423,6 +423,10 @@ export function WeekPage() {
             <View style={styles.barTrack}>
               <View style={[styles.barFill, { width: `${budgetPct}%`, backgroundColor: overBudget ? colors.deal : colors.green }]} />
             </View>
+            <Text style={styles.budgetNote}>
+              Groceries round up to whole packs across the week — day-by-day figures below are each
+              day's fractional share, so they won't sum to exactly this total.
+            </Text>
           </View>
 
           {shoppingItems.length > 0 && (
@@ -819,6 +823,7 @@ const styles = StyleSheet.create({
   budgetCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line, borderRadius: 8, padding: 12, marginBottom: 12 },
   budgetHeading: { fontSize: 12, fontWeight: "600", color: colors.ink, marginBottom: 4 },
   budgetStatus: { fontSize: 13, fontWeight: "700", marginBottom: 6 },
+  budgetNote: { fontSize: 11, color: colors.faint, marginTop: 6 },
   totRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 },
   totCard: { flexBasis: "47%", flexGrow: 1, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line, borderRadius: 8, padding: 10 },
   totCardWin: { borderColor: colors.green, borderWidth: 2 },

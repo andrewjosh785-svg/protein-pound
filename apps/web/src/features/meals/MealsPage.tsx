@@ -5,6 +5,7 @@ import {
   formatPriceCheckDate,
   latestPriceCheck,
   mealCostPerServing,
+  mealCostPerServingStandalone,
   money,
   packAmountLabel,
   proteinPerPound,
@@ -132,7 +133,8 @@ export function MealsPage({
     .filter((m) => !category || m.category === category)
     .map((m) => {
       const perServing = mealCostPerServing(m, priceLookup, storeId);
-      return { meal: m, perServing, valuePerPound: proteinPerPound(perServing, m.proteinG) };
+      const standalone = mealCostPerServingStandalone(m, priceLookup, storeId);
+      return { meal: m, perServing, standalone, valuePerPound: proteinPerPound(perServing, m.proteinG) };
     });
 
   const sorted = [...rows].sort((a, b) => {
@@ -246,11 +248,12 @@ export function MealsPage({
         </div>
       ) : (
         <div className="grid">
-          {sorted.map(({ meal, perServing, valuePerPound }) => (
+          {sorted.map(({ meal, perServing, standalone, valuePerPound }) => (
             <MealCard
               key={meal.id}
               meal={meal}
               perServing={perServing}
+              standalone={standalone}
               valuePerPound={valuePerPound}
               isBest={meal.id === bestValueMealId && sortBy === "value"}
               storeLabel={storeId ? stores.find((s) => s.id === storeId)?.name ?? "" : "cheapest mix"}
@@ -294,6 +297,7 @@ export function MealsPage({
 function MealCard({
   meal,
   perServing,
+  standalone,
   valuePerPound,
   isBest,
   storeLabel,
@@ -313,6 +317,7 @@ function MealCard({
 }: {
   meal: Meal;
   perServing: number;
+  standalone: number;
   valuePerPound: number;
   isBest: boolean;
   storeLabel: string;
@@ -333,6 +338,8 @@ function MealCard({
   const [scaleServings, setScaleServings] = useState(meal.servings);
   const isScaled = scaleServings !== meal.servings && scaleServings > 0;
   const scaleFactor = meal.servings > 0 ? scaleServings / meal.servings : 1;
+  const standaloneDiff = standalone - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
 
   return (
     <div className="card">
@@ -383,6 +390,11 @@ function MealCard({
         <div className="sel">
           <div className="big ppp-disp">{money(perServing)}</div>
           <div className="sm">per serving · {storeLabel}</div>
+          {showStandalone && (
+            <div className="sm" style={{ color: "var(--faint)" }}>
+              {money(standalone)} buying everything fresh
+            </div>
+          )}
         </div>
         <div className="valcell">
           <div className="big ppp-disp">{valuePerPound.toFixed(0)}g</div>

@@ -152,6 +152,19 @@ export function RecipeBuilderPage({
   const perServing = meal.servings > 0 ? cheapestCost / meal.servings : 0;
   const valuePerPound = proteinPerPound(perServing, meal.proteinG);
 
+  // Same cheapest store, but rounding each ingredient up to whole packs — what you'd actually
+  // pay buying everything fresh for just this recipe, with nothing shared or reused elsewhere.
+  const cheapestStore = storeCosts.find((s) => s.cost === cheapestCost)?.store;
+  const standaloneCost = cheapestStore
+    ? meal.ingredients.reduce(
+        (sum, use) => sum + (priceLookup.get(use.ingredientId)?.get(cheapestStore.id) ?? 0) * Math.ceil(use.packFraction),
+        0
+      )
+    : 0;
+  const standalonePerServing = meal.servings > 0 ? standaloneCost / meal.servings : 0;
+  const standaloneDiff = standalonePerServing - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
+
   const isEditing = editingMeal !== null;
   const activeMutation = isEditing ? update : save;
 
@@ -336,7 +349,7 @@ export function RecipeBuilderPage({
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 13, marginBottom: 14 }}>
+          <div style={{ fontSize: 13, marginBottom: showStandalone ? 4 : 14 }}>
             At the cheapest store that's <b>{money(perServing)} per serving</b>
             {meal.proteinG > 0 && (
               <>
@@ -345,6 +358,11 @@ export function RecipeBuilderPage({
               </>
             )}
           </div>
+          {showStandalone && (
+            <div style={{ fontSize: 12, color: "var(--faint)", marginBottom: 14 }}>
+              {money(standalonePerServing)} per serving buying everything fresh (whole packs, nothing shared with other meals)
+            </div>
+          )}
 
           {activeMutation.isError && (
             <div className="bad" style={{ marginBottom: 10, fontSize: 12.5 }}>

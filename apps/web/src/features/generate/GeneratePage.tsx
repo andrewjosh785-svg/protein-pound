@@ -5,6 +5,7 @@ import {
   formatPriceCheckDate,
   latestPriceCheck,
   mealCostPerServing,
+  mealCostPerServingStandalone,
   money,
   proteinPerPound,
   servingsLabel,
@@ -52,6 +53,9 @@ export function GeneratePage() {
   const recipe = generate.data;
   const meal = recipe ? recipeToMeal(recipe, ingredientKeyToId) : null;
   const perServing = meal ? mealCostPerServing(meal, priceLookup, null) : 0;
+  const standalone = meal ? mealCostPerServingStandalone(meal, priceLookup, null) : 0;
+  const standaloneDiff = standalone - perServing;
+  const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
   const valuePerPound = meal ? proteinPerPound(perServing, meal.proteinG) : 0;
   const storeCosts = meal
     ? stores.map((s) => ({
@@ -155,6 +159,11 @@ export function GeneratePage() {
             <div className="sel">
               <div className="big ppp-disp">{money(perServing)}</div>
               <div className="sm">per serving · cheapest mix</div>
+              {showStandalone && (
+                <div className="sm" style={{ color: "var(--faint)" }}>
+                  {money(standalone)} buying everything fresh
+                </div>
+              )}
             </div>
             <div className="valcell">
               <div className="big ppp-disp">{valuePerPound.toFixed(0)}g</div>
