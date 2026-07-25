@@ -24,6 +24,8 @@ export function useSaveGeneratedMeal() {
           name: recipe.name,
           servings: recipe.servings,
           protein_g: recipe.protein,
+          carbs_g: recipe.carbs,
+          fat_g: recipe.fat,
           kcal: recipe.kcal,
           is_veggie: recipe.veggie,
           time_label: recipe.time,

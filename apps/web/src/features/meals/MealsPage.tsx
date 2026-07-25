@@ -4,6 +4,7 @@ import {
   formatIngredientLine,
   formatPriceCheckDate,
   latestPriceCheck,
+  latestPriceCheckByStore,
   mealCostPerServing,
   mealCostPerServingStandalone,
   money,
@@ -119,6 +120,7 @@ export function MealsPage({
   const ingredients = ingredientsQuery.data!;
   const priceLookup = buildPriceLookup(prices);
   const lastChecked = latestPriceCheck(prices);
+  const checkedByStore = latestPriceCheckByStore(prices);
 
   const searchLower = searchQuery.trim().toLowerCase();
   const rows = meals
@@ -229,7 +231,7 @@ export function MealsPage({
       </div>
       {lastChecked && (
         <div style={{ fontSize: 11.5, color: "var(--faint)", padding: "0 20px 10px" }}>
-          Prices last checked {formatPriceCheckDate(lastChecked)}
+          Prices last checked <time dateTime={lastChecked.toISOString()}>{formatPriceCheckDate(lastChecked)}</time>
         </div>
       )}
 
@@ -260,6 +262,7 @@ export function MealsPage({
               ingredients={ingredients}
               stores={stores}
               priceLookup={priceLookup}
+              checkedByStore={checkedByStore}
               recipeOpen={openRecipeId === meal.id}
               onToggleRecipe={() => {
                 setOpenRecipeId(openRecipeId === meal.id ? null : meal.id);
@@ -304,6 +307,7 @@ function MealCard({
   ingredients,
   stores,
   priceLookup,
+  checkedByStore,
   recipeOpen,
   onToggleRecipe,
   pricesOpen,
@@ -324,6 +328,7 @@ function MealCard({
   ingredients: Map<string, Ingredient>;
   stores: Store[];
   priceLookup: PriceLookup;
+  checkedByStore: Map<string, Date>;
   recipeOpen: boolean;
   onToggleRecipe: () => void;
   pricesOpen: boolean;
@@ -458,9 +463,25 @@ function MealCard({
             <thead>
               <tr>
                 <th className="namecol">Ingredient</th>
-                {stores.map((s) => (
-                  <th key={s.id}>{s.name}</th>
-                ))}
+                {stores.map((s) => {
+                  const checked = checkedByStore.get(s.id);
+                  return (
+                    <th key={s.id}>
+                      {s.name}
+                      {checked && (
+                        <>
+                          <br />
+                          <time
+                            dateTime={checked.toISOString()}
+                            style={{ fontWeight: 400, fontSize: 9.5, color: "var(--faint)", textTransform: "none" }}
+                          >
+                            checked {formatPriceCheckDate(checked)}
+                          </time>
+                        </>
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
@@ -484,7 +505,9 @@ function MealCard({
         </div>
       )}
 
-      {aiEditOpen && <AiEditPanel meal={meal} ingredients={ingredients} isOwner={isOwner} />}
+      {aiEditOpen && (
+        <AiEditPanel meal={meal} ingredients={ingredients} priceLookup={priceLookup} isOwner={isOwner} />
+      )}
 
       <div className="actions">
         <button onClick={onToggleRecipe}>{recipeOpen ? "Hide recipe" : "Recipe"}</button>

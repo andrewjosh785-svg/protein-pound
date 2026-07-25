@@ -410,7 +410,9 @@ function MealCard({
         </View>
       )}
 
-      {aiEditOpen && <AiEditPanel meal={meal} ingredients={ingredients} isOwner={isOwner} />}
+      {aiEditOpen && (
+        <AiEditPanel meal={meal} ingredients={ingredients} priceLookup={priceLookup} isOwner={isOwner} />
+      )}
 
       <View style={styles.actionsRow}>
         <ActionBtn label={recipeOpen ? "Hide recipe" : "Recipe"} onPress={onToggleRecipe} />

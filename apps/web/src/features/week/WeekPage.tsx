@@ -7,6 +7,7 @@ import {
   computeDayStats,
   formatPriceCheckDate,
   latestPriceCheck,
+  latestPriceCheckByStore,
   money,
   shoppingListTotalsByStore,
   todayAsDayOfWeek,
@@ -175,6 +176,7 @@ function WeekPlanner() {
   const cheapestId = cheapestStoreId(shoppingTotals);
   const groceriesTotal = cheapestId ? shoppingTotals[cheapestId] : 0;
   const lastChecked = latestPriceCheck(prices);
+  const checkedByStore = latestPriceCheckByStore(prices);
   const groupedShopping = groupShoppingItemsByAisle(shoppingItems, ingredients);
   const cheapestStoreName = cheapestId ? stores.find((s) => s.id === cheapestId)?.name ?? null : null;
   const shoppingListText = buildShoppingListText(groupedShopping, ingredients, cheapestStoreName);
@@ -638,9 +640,25 @@ function WeekPlanner() {
                     <tr>
                       <th className="namecol">Ingredient</th>
                       <th>Packs</th>
-                      {stores.map((s) => (
-                        <th key={s.id}>{s.name}</th>
-                      ))}
+                      {stores.map((s) => {
+                        const checked = checkedByStore.get(s.id);
+                        return (
+                          <th key={s.id}>
+                            {s.name}
+                            {checked && (
+                              <>
+                                <br />
+                                <time
+                                  dateTime={checked.toISOString()}
+                                  style={{ fontWeight: 400, fontSize: 9.5, color: "var(--faint)", textTransform: "none" }}
+                                >
+                                  checked {formatPriceCheckDate(checked)}
+                                </time>
+                              </>
+                            )}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>
@@ -676,7 +694,7 @@ function WeekPlanner() {
               </div>
               {lastChecked && (
                 <div style={{ fontSize: 11.5, color: "var(--faint)", marginTop: 6 }}>
-                  Prices last checked {formatPriceCheckDate(lastChecked)}
+                  Prices last checked <time dateTime={lastChecked.toISOString()}>{formatPriceCheckDate(lastChecked)}</time>
                 </div>
               )}
             </>

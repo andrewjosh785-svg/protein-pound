@@ -4,6 +4,7 @@ import {
   formatIngredientLine,
   formatPriceCheckDate,
   latestPriceCheck,
+  latestPriceCheckByStore,
   mealCostPerServing,
   mealCostPerServingStandalone,
   money,
@@ -47,6 +48,7 @@ export function GeneratePage() {
   const { stores, prices } = storesQuery.data!;
   const priceLookup = buildPriceLookup(prices);
   const lastChecked = latestPriceCheck(prices);
+  const checkedByStore = latestPriceCheckByStore(prices);
   const ingredientKeyToId = new Map<string, string>();
   for (const ing of ingredients.values()) ingredientKeyToId.set(ing.key, ing.id);
 
@@ -75,7 +77,7 @@ export function GeneratePage() {
       </h2>
       <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 14px" }}>
         Describe what you fancy and Gemini invents a recipe on the spot using the priced
-        ingredient database — so it arrives already costed at all six supermarkets.
+        ingredient database — so it arrives already costed at all five supermarkets.
       </p>
 
       <div className="fldrow" style={{ alignItems: "flex-end" }}>
@@ -194,9 +196,25 @@ export function GeneratePage() {
             <table>
               <thead>
                 <tr>
-                  {storeCosts.map(({ store }) => (
-                    <th key={store.id}>{store.name}</th>
-                  ))}
+                  {storeCosts.map(({ store }) => {
+                    const checked = checkedByStore.get(store.id);
+                    return (
+                      <th key={store.id}>
+                        {store.name}
+                        {checked && (
+                          <>
+                            <br />
+                            <time
+                              dateTime={checked.toISOString()}
+                              style={{ fontWeight: 400, fontSize: 9.5, color: "var(--faint)", textTransform: "none" }}
+                            >
+                              checked {formatPriceCheckDate(checked)}
+                            </time>
+                          </>
+                        )}
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
@@ -212,7 +230,7 @@ export function GeneratePage() {
           </div>
           {lastChecked && (
             <div style={{ fontSize: 11.5, color: "var(--faint)", padding: "6px 14px 0" }}>
-              Prices last checked {formatPriceCheckDate(lastChecked)}
+              Prices last checked <time dateTime={lastChecked.toISOString()}>{formatPriceCheckDate(lastChecked)}</time>
             </div>
           )}
 

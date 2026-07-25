@@ -4,6 +4,7 @@ import {
   formatIngredientLine,
   formatPriceCheckDate,
   latestPriceCheck,
+  latestPriceCheckByStore,
   mealCostPerServing,
   mealCostPerServingStandalone,
   money,
@@ -87,6 +88,7 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
   const showStandalone = standaloneDiff > 0.05 && standaloneDiff > perServing * 0.05;
   const valuePerPound = proteinPerPound(perServing, meal.proteinG);
   const lastChecked = latestPriceCheck(prices);
+  const checkedByStore = latestPriceCheckByStore(prices);
 
   const servings = scaleServings ?? meal.servings;
   const isScaled = servings !== meal.servings && servings > 0;
@@ -201,9 +203,25 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
           <thead>
             <tr>
               <th className="namecol">Ingredient</th>
-              {stores.map((s) => (
-                <th key={s.id}>{s.name}</th>
-              ))}
+              {stores.map((s) => {
+                const checked = checkedByStore.get(s.id);
+                return (
+                  <th key={s.id}>
+                    {s.name}
+                    {checked && (
+                      <>
+                        <br />
+                        <time
+                          dateTime={checked.toISOString()}
+                          style={{ fontWeight: 400, fontSize: 9.5, color: "var(--faint)", textTransform: "none" }}
+                        >
+                          checked {formatPriceCheckDate(checked)}
+                        </time>
+                      </>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -227,7 +245,7 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
       </div>
       {lastChecked && (
         <div style={{ fontSize: 11.5, color: "var(--faint)", marginTop: 8 }}>
-          Prices last checked {formatPriceCheckDate(lastChecked)}
+          Prices last checked <time dateTime={lastChecked.toISOString()}>{formatPriceCheckDate(lastChecked)}</time>
         </div>
       )}
     </div>

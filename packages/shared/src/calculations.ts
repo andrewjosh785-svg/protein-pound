@@ -173,6 +173,17 @@ export function latestPriceCheck(prices: IngredientPrice[]): Date | null {
   return new Date(Math.max(...prices.map((p) => new Date(p.updatedAt).getTime())));
 }
 
+/** Same trust signal, split per store — each store's own prices are updated independently,
+ * so a single blended "last checked" date can hide that one store's figures are staler. */
+export function latestPriceCheckByStore(prices: IngredientPrice[]): Map<string, Date> {
+  const byStore = new Map<string, number>();
+  for (const p of prices) {
+    const t = new Date(p.updatedAt).getTime();
+    if (!byStore.has(p.storeId) || t > byStore.get(p.storeId)!) byStore.set(p.storeId, t);
+  }
+  return new Map(Array.from(byStore.entries()).map(([storeId, t]) => [storeId, new Date(t)]));
+}
+
 export function formatPriceCheckDate(date: Date): string {
   return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
