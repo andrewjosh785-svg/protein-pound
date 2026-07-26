@@ -34,11 +34,12 @@ import { useMeals } from "../../lib/queries/useMeals";
 import { useIngredients } from "../../lib/queries/useIngredients";
 import { useStoresAndPrices } from "../../lib/queries/useStoresAndPrices";
 import { useCopyLastWeek } from "../../lib/queries/useCopyLastWeek";
+import { useFoodSearch } from "../../lib/queries/useFoodSearch";
 import { BarcodeScannerScreen } from "../scan/BarcodeScannerScreen";
 import { ScanConfirmSheet } from "../scan/ScanConfirmSheet";
 import { MealPhotoScreen } from "../scan/MealPhotoScreen";
 import { MealPhotoConfirmSheet } from "../scan/MealPhotoConfirmSheet";
-import type { BarcodeLookupResult } from "../../lib/openFoodFacts";
+import type { BarcodeLookupResult, FoodSearchResult } from "../../lib/openFoodFacts";
 import type { MealPhotoEstimate } from "../../lib/queries/useEstimateMealPhoto";
 import { colors } from "../../theme/tokens";
 
@@ -116,6 +117,17 @@ export function WeekPage() {
   const [copied, setCopied] = useState(false);
   const [scanFlow, setScanFlow] = useState<ScanFlow | null>(null);
   const [photoScanFlow, setPhotoScanFlow] = useState<PhotoScanFlow | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const foodSearch = useFoodSearch(qName);
+
+  const selectSearchResult = (r: FoodSearchResult) => {
+    setQName(r.name);
+    if (r.kcalPerServing !== null) setQKcal(String(r.kcalPerServing));
+    if (r.proteinGPerServing !== null) setQProtein(String(r.proteinGPerServing));
+    if (r.carbsGPerServing !== null) setQCarbs(String(r.carbsGPerServing));
+    if (r.fatGPerServing !== null) setQFat(String(r.fatGPerServing));
+    setSearchOpen(false);
+  };
 
   useEffect(() => {
     if (profile.data) {
@@ -337,7 +349,28 @@ export function WeekPage() {
           </Picker>
         </View>
         <Text style={styles.fieldLabel}>Item</Text>
-        <TextInput style={styles.input} value={qName} onChangeText={setQName} placeholder="e.g. Boots meal deal" />
+        <TextInput
+          style={styles.input}
+          value={qName}
+          onChangeText={(text) => {
+            setQName(text);
+            setSearchOpen(true);
+          }}
+          placeholder="e.g. Boots meal deal, or search 'Big Mac'"
+        />
+        {searchOpen && (foodSearch.data?.length ?? 0) > 0 && (
+          <View style={styles.searchResults}>
+            {foodSearch.data!.map((r) => (
+              <Pressable key={r.code} style={styles.searchResultRow} onPress={() => selectSearchResult(r)}>
+                <Text style={styles.searchResultName}>{r.name}</Text>
+                <Text style={styles.searchResultMeta}>
+                  {r.brand ? `${r.brand} · ` : ""}
+                  {r.kcalPerServing !== null ? `${r.kcalPerServing} kcal` : ""}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
         <View style={styles.row3}>
           <View style={styles.flex1}>
             <Text style={styles.fieldLabel}>Kcal</Text>
@@ -797,6 +830,10 @@ const styles = StyleSheet.create({
   quickBody: { fontSize: 12, color: colors.muted, marginBottom: 4 },
   pickerWrap: { borderWidth: 1, borderColor: colors.line, borderRadius: 6, backgroundColor: colors.paper },
   quickAddActionsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 },
+  searchResults: { borderWidth: 1, borderColor: colors.line, borderRadius: 6, marginTop: 4, overflow: "hidden" },
+  searchResultRow: { paddingHorizontal: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: colors.line },
+  searchResultName: { fontSize: 13, fontWeight: "700", color: colors.ink },
+  searchResultMeta: { fontSize: 11, color: colors.muted, marginTop: 2 },
   logBtn: { backgroundColor: colors.ink, borderRadius: 6, paddingVertical: 10, alignItems: "center" },
   logBtnText: { color: colors.paper, fontSize: 13, fontWeight: "700" },
   scanBtn: {

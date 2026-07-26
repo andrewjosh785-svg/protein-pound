@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   DAY_LABELS,
   buildPriceLookup,
@@ -25,6 +25,8 @@ import { useMeals } from "../../lib/queries/useMeals";
 import { useIngredients } from "../../lib/queries/useIngredients";
 import { useStoresAndPrices } from "../../lib/queries/useStoresAndPrices";
 import { useCopyLastWeek } from "../../lib/queries/useCopyLastWeek";
+import { useFoodSearch } from "../../lib/queries/useFoodSearch";
+import type { FoodSearchResult } from "../../lib/openFoodFacts";
 
 const DAYS: DayOfWeek[] = [0, 1, 2, 3, 4, 5, 6];
 
@@ -106,6 +108,37 @@ function WeekPlanner() {
   const [qFat, setQFat] = useState(0);
   const [qCost, setQCost] = useState(1.5);
   const [copied, setCopied] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
+  const foodSearch = useFoodSearch(qName);
+
+  // Dismiss the search dropdown on outside click or Escape — same pattern as AuthWidget's popover.
+  useEffect(() => {
+    if (!searchOpen) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [searchOpen]);
+
+  const selectSearchResult = (r: FoodSearchResult) => {
+    setQName(r.name);
+    if (r.kcalPerServing !== null) setQKcal(r.kcalPerServing);
+    if (r.proteinGPerServing !== null) setQProtein(r.proteinGPerServing);
+    if (r.carbsGPerServing !== null) setQCarbs(r.carbsGPerServing);
+    if (r.fatGPerServing !== null) setQFat(r.fatGPerServing);
+    setSearchOpen(false);
+  };
 
   useEffect(() => {
     if (profile.data) {
@@ -321,15 +354,54 @@ function WeekPlanner() {
               ))}
             </select>
           </div>
-          <div className="fld">
+          <div className="fld" style={{ position: "relative" }} ref={searchBoxRef}>
             <label>Item</label>
             <input
               type="text"
               value={qName}
-              placeholder="e.g. Boots meal deal"
-              onChange={(e) => setQName(e.target.value)}
-              style={{ width: 180 }}
+              placeholder="e.g. Boots meal deal, or search 'Big Mac'"
+              onChange={(e) => {
+                setQName(e.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              style={{ width: 220 }}
             />
+            {searchOpen && (foodSearch.data?.length ?? 0) > 0 && (
+              <div
+                className="tcard"
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  left: 0,
+                  width: 280,
+                  zIndex: 10,
+                  background: "var(--surface)",
+                  padding: 6,
+                }}
+              >
+                {foodSearch.data!.map((r) => (
+                  <button
+                    key={r.code}
+                    className="pill"
+                    onClick={() => selectSearchResult(r)}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      marginBottom: 4,
+                      fontWeight: 400,
+                    }}
+                  >
+                    <b>{r.name}</b>
+                    {r.brand && <span style={{ color: "var(--muted)" }}> · {r.brand}</span>}
+                    {r.kcalPerServing !== null && (
+                      <span style={{ color: "var(--faint)" }}> — {r.kcalPerServing} kcal</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="fld">
             <label>Kcal</label>
