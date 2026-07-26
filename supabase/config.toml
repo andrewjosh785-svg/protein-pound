@@ -58,6 +58,9 @@ enabled = true
 [functions.generate-recipe]
 verify_jwt = true
 
+[functions.estimate-meal-photo]
+verify_jwt = true
+
 [functions.create-checkout-session]
 verify_jwt = true
 

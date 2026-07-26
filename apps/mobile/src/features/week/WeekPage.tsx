@@ -36,10 +36,14 @@ import { useStoresAndPrices } from "../../lib/queries/useStoresAndPrices";
 import { useCopyLastWeek } from "../../lib/queries/useCopyLastWeek";
 import { BarcodeScannerScreen } from "../scan/BarcodeScannerScreen";
 import { ScanConfirmSheet } from "../scan/ScanConfirmSheet";
+import { MealPhotoScreen } from "../scan/MealPhotoScreen";
+import { MealPhotoConfirmSheet } from "../scan/MealPhotoConfirmSheet";
 import type { BarcodeLookupResult } from "../../lib/openFoodFacts";
+import type { MealPhotoEstimate } from "../../lib/queries/useEstimateMealPhoto";
 import { colors } from "../../theme/tokens";
 
 type ScanFlow = { phase: "scanning" } | { phase: "confirm"; barcode: string; prefill: BarcodeLookupResult | null };
+type PhotoScanFlow = { phase: "capture" } | { phase: "confirm"; estimate: MealPhotoEstimate | null };
 
 const DAYS: DayOfWeek[] = [0, 1, 2, 3, 4, 5, 6];
 
@@ -111,6 +115,7 @@ export function WeekPage() {
   const [qCost, setQCost] = useState("1.5");
   const [copied, setCopied] = useState(false);
   const [scanFlow, setScanFlow] = useState<ScanFlow | null>(null);
+  const [photoScanFlow, setPhotoScanFlow] = useState<PhotoScanFlow | null>(null);
 
   useEffect(() => {
     if (profile.data) {
@@ -171,6 +176,25 @@ export function WeekPage() {
         planId={planId}
         onCancel={() => setScanFlow(null)}
         onDone={() => setScanFlow(null)}
+      />
+    );
+  }
+
+  if (photoScanFlow?.phase === "capture") {
+    return (
+      <MealPhotoScreen
+        onCancel={() => setPhotoScanFlow(null)}
+        onConfirm={(estimate) => setPhotoScanFlow({ phase: "confirm", estimate })}
+      />
+    );
+  }
+  if (photoScanFlow?.phase === "confirm") {
+    return (
+      <MealPhotoConfirmSheet
+        estimate={photoScanFlow.estimate}
+        planId={planId}
+        onCancel={() => setPhotoScanFlow(null)}
+        onDone={() => setPhotoScanFlow(null)}
       />
     );
   }
@@ -344,6 +368,9 @@ export function WeekPage() {
           </Pressable>
           <Pressable style={styles.scanBtn} onPress={() => setScanFlow({ phase: "scanning" })}>
             <Text style={styles.scanBtnText}>📷 Scan a barcode</Text>
+          </Pressable>
+          <Pressable style={styles.scanBtn} onPress={() => setPhotoScanFlow({ phase: "capture" })}>
+            <Text style={styles.scanBtnText}>📸 Snap a meal</Text>
           </Pressable>
         </View>
       </View>
@@ -769,7 +796,7 @@ const styles = StyleSheet.create({
   quickHeading: { fontSize: 15, fontWeight: "800", color: colors.ink, marginBottom: 4 },
   quickBody: { fontSize: 12, color: colors.muted, marginBottom: 4 },
   pickerWrap: { borderWidth: 1, borderColor: colors.line, borderRadius: 6, backgroundColor: colors.paper },
-  quickAddActionsRow: { flexDirection: "row", gap: 8, marginTop: 12 },
+  quickAddActionsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 },
   logBtn: { backgroundColor: colors.ink, borderRadius: 6, paddingVertical: 10, alignItems: "center" },
   logBtnText: { color: colors.paper, fontSize: 13, fontWeight: "700" },
   scanBtn: {
