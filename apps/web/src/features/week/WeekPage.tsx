@@ -396,7 +396,10 @@ function WeekPlanner() {
                     <b>{r.name}</b>
                     {r.brand && <span style={{ color: "var(--muted)" }}> · {r.brand}</span>}
                     {r.kcalPerServing !== null && (
-                      <span style={{ color: "var(--faint)" }}> — {r.kcalPerServing} kcal</span>
+                      <span style={{ color: "var(--faint)" }}>
+                        {" "}
+                        — {r.kcalPerServing} kcal per {r.servingBasis}
+                      </span>
                     )}
                   </button>
                 ))}

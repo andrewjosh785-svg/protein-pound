@@ -77,7 +77,7 @@ export function BarcodeScannerScreen({
             <Text style={styles.overlayCardText}>
               {state.result.kcalPerServing === null
                 ? "No nutrition info in this database — you can still fill it in yourself"
-                : `${state.result.kcalPerServing} kcal · ${state.result.proteinGPerServing}g protein (per serving)`}
+                : `${state.result.kcalPerServing} kcal · ${state.result.proteinGPerServing}g protein — per ${state.result.servingBasis}`}
             </Text>
             <Pressable style={styles.primaryBtn} onPress={() => onConfirm(state.barcode, state.result)}>
               <Text style={styles.primaryBtnText}>Use this</Text>

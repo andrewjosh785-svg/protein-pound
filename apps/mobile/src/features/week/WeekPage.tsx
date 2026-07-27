@@ -365,7 +365,7 @@ export function WeekPage() {
                 <Text style={styles.searchResultName}>{r.name}</Text>
                 <Text style={styles.searchResultMeta}>
                   {r.brand ? `${r.brand} · ` : ""}
-                  {r.kcalPerServing !== null ? `${r.kcalPerServing} kcal` : ""}
+                  {r.kcalPerServing !== null ? `${r.kcalPerServing} kcal per ${r.servingBasis}` : ""}
                 </Text>
               </Pressable>
             ))}

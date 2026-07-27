@@ -11,6 +11,10 @@ export interface FoodSearchResult {
   proteinGPerServing: number | null;
   carbsGPerServing: number | null;
   fatGPerServing: number | null;
+  /** What the macro figures above are FOR — e.g. "219 g", "1 burger (219 g)", or "100g" when
+   * OFF has no serving-size info at all and the figures are the raw per-100g values. Without
+   * this, "550 kcal" is ambiguous between a whole item and a 100g reference amount. */
+  servingBasis: string;
 }
 
 export async function searchFoodByName(query: string): Promise<FoodSearchResult[]> {
@@ -20,7 +24,7 @@ export async function searchFoodByName(query: string): Promise<FoodSearchResult[
     action: "process",
     json: "1",
     page_size: "8",
-    fields: "code,product_name,brands,nutriments,serving_quantity",
+    fields: "code,product_name,brands,nutriments,serving_quantity,serving_size",
   });
   const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?${params}`);
   if (!response.ok) return [];
@@ -50,6 +54,7 @@ export async function searchFoodByName(query: string): Promise<FoodSearchResult[
           resolveNutrient(nutriments["carbohydrates_serving"], nutriments["carbohydrates_100g"], servingQuantity)
         ),
         fatGPerServing: roundOrNull(resolveNutrient(nutriments["fat_serving"], nutriments["fat_100g"], servingQuantity)),
+        servingBasis: describeServingBasis(product.serving_size, servingQuantity),
       };
     })
     .filter((r): r is FoodSearchResult => r !== null);
@@ -62,6 +67,17 @@ function resolveNutrient(perServing: number | undefined, per100g: number | undef
   if (typeof per100g === "number" && servingQuantity) return (per100g * servingQuantity) / 100;
   if (typeof per100g === "number") return per100g;
   return null;
+}
+
+// Prefers the label's own raw serving text (e.g. "1 burger (219 g)") since it's the most
+// concrete and human-meaningful; falls back to a plain gram figure if only the quantity is
+// known; falls back to "100g" as a last resort — when OFF has no serving-size info at all,
+// the resolveNutrient() branch that fires in that case is always the raw per-100g figure, so
+// this label stays accurate even without per-nutrient tracking of which branch was taken.
+function describeServingBasis(rawServingSize: unknown, servingQuantity: number | null): string {
+  if (typeof rawServingSize === "string" && rawServingSize.trim()) return rawServingSize.trim();
+  if (servingQuantity) return `${servingQuantity}g`;
+  return "100g";
 }
 
 function roundOrNull(n: number | null): number | null {

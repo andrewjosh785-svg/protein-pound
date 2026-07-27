@@ -91,6 +91,9 @@ export function ScanConfirmSheet({
             Servings {prefill.packServings ? "(defaults to the whole pack)" : ""}
           </Text>
           <TextInput style={styles.input} keyboardType="decimal-pad" value={servings} onChangeText={handleServingsChange} />
+          {!missingNutritionData && (
+            <Text style={styles.subtext}>1 serving = {prefill.servingBasis} — the figures below scale with it</Text>
+          )}
         </>
       )}
 
