@@ -6,6 +6,7 @@ export interface GeneratedRecipeResult {
   name: string;
   desc: string;
   servings: number;
+  servingSizeG: number | null;
   protein: number;
   carbs: number;
   fat: number;

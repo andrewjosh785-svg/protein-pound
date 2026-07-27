@@ -37,7 +37,9 @@ export function formatIngredientLine(humanQuantity: string, ingredientName: stri
   return `${humanQuantity} ${ingredientName.toLowerCase()}`;
 }
 
-/** "1 serving" / "4 servings" — avoids the "1 servings" pluralization bug. */
-export function servingsLabel(n: number): string {
-  return `${n} serving${n === 1 ? "" : "s"}`;
+/** "1 serving" / "4 servings", optionally with an approx weight — "4 servings (~350g each)" —
+ * when the recipe has an estimated serving_size_g. Avoids the "1 servings" pluralization bug. */
+export function servingsLabel(n: number, servingSizeG?: number | null): string {
+  const base = `${n} serving${n === 1 ? "" : "s"}`;
+  return servingSizeG ? `${base} (~${servingSizeG}g each)` : base;
 }

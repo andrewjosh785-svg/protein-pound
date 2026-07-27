@@ -53,6 +53,7 @@ export function RecipeBuilderPage({
 
   const [name, setName] = useState("");
   const [servings, setServings] = useState("2");
+  const [servingSizeG, setServingSizeG] = useState("");
   const [protein, setProtein] = useState("25");
   const [carbs, setCarbs] = useState("40");
   const [fat, setFat] = useState("15");
@@ -66,6 +67,7 @@ export function RecipeBuilderPage({
     if (editingMeal) {
       setName(editingMeal.name);
       setServings(String(editingMeal.servings));
+      setServingSizeG(editingMeal.servingSizeG ? String(editingMeal.servingSizeG) : "");
       setProtein(String(editingMeal.proteinG));
       setCarbs(String(editingMeal.carbsG));
       setFat(String(editingMeal.fatG));
@@ -78,6 +80,7 @@ export function RecipeBuilderPage({
       const blank = emptyForm();
       setName(blank.name);
       setServings(String(blank.servings));
+      setServingSizeG("");
       setProtein(String(blank.protein));
       setCarbs(String(blank.carbs));
       setFat(String(blank.fat));
@@ -134,6 +137,7 @@ export function RecipeBuilderPage({
     slug: "builder",
     name: name.trim() || "My recipe",
     servings: servingsNum,
+    servingSizeG: Number(servingSizeG) > 0 ? Math.round(Number(servingSizeG)) : null,
     proteinG: proteinNum,
     carbsG: carbsNum,
     fatG: fatNum,
@@ -210,6 +214,15 @@ export function RecipeBuilderPage({
         keyboardType="number-pad"
         value={servings}
         onChangeText={setServings}
+      />
+
+      <Text style={styles.fieldLabel}>Serving size (approx, g)</Text>
+      <TextInput
+        style={[styles.input, styles.servingsInput]}
+        keyboardType="number-pad"
+        value={servingSizeG}
+        onChangeText={setServingSizeG}
+        placeholder="optional"
       />
 
       <View style={styles.row4}>

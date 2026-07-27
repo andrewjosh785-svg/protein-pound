@@ -77,7 +77,7 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
         {meal.source !== "builtin" && <Badge text={meal.source === "ai" ? "✨ AI" : "Yours"} />}
         {meal.isVeggie && <Badge text="Veggie" />}
         <Badge text={MEAL_CATEGORY_LABELS[meal.category]} />
-        <Badge text={servingsLabel(meal.servings)} />
+        <Badge text={servingsLabel(meal.servings, meal.servingSizeG)} />
       </View>
       <Text style={styles.title}>{meal.name}</Text>
       <Text style={styles.desc}>{meal.description}</Text>

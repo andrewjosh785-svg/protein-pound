@@ -311,7 +311,7 @@ function MealCard({
         {meal.source !== "builtin" && <Badge text={meal.source === "ai" ? "✨ AI" : "Yours"} tone="cust" />}
         {meal.isVeggie && <Badge text="Veggie" tone="v" />}
         <Badge text={MEAL_CATEGORY_LABELS[meal.category]} />
-        <Badge text={servingsLabel(meal.servings)} />
+        <Badge text={servingsLabel(meal.servings, meal.servingSizeG)} />
       </View>
       <Pressable onPress={onOpen}>
         <Text style={styles.mealName}>{meal.name}</Text>

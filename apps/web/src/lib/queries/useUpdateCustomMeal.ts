@@ -22,6 +22,7 @@ export function useUpdateCustomMeal() {
         .update({
           name: meal.name,
           servings: meal.servings,
+          serving_size_g: meal.servingSizeG,
           protein_g: meal.proteinG,
           carbs_g: meal.carbsG,
           fat_g: meal.fatG,

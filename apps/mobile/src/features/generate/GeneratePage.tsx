@@ -121,7 +121,7 @@ export function GeneratePage() {
             <Badge text="✨ AI" />
             {meal.isVeggie && <Badge text="Veggie" />}
             <Badge text={MEAL_CATEGORY_LABELS[meal.category]} />
-            <Badge text={servingsLabel(meal.servings)} />
+            <Badge text={servingsLabel(meal.servings, meal.servingSizeG)} />
           </View>
           <Text style={styles.mealName}>{meal.name}</Text>
           <Text style={styles.mealDesc}>{meal.description}</Text>

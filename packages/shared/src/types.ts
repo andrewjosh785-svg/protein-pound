@@ -45,6 +45,9 @@ export interface Meal {
   slug: string;
   name: string;
   servings: number;
+  /** Approx grams for one serving, as pictured/described — null means not yet estimated,
+   * distinct from a real 0 (which would never be a genuine serving weight). */
+  servingSizeG: number | null;
   proteinG: number;
   carbsG: number;
   fatG: number;

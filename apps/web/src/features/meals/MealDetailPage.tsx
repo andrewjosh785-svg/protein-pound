@@ -106,7 +106,7 @@ export function MealDetailPage({ slug, onBack }: { slug: string; onBack: () => v
         )}
         {meal.isVeggie && <span className="badge v">Veggie</span>}
         <span className="badge">{MEAL_CATEGORY_LABELS[meal.category]}</span>
-        <span className="badge">{servingsLabel(meal.servings)}</span>
+        <span className="badge">{servingsLabel(meal.servings, meal.servingSizeG)}</span>
       </div>
       <h2 className="ppp-disp" style={{ textTransform: "uppercase", fontSize: 28, margin: "0 0 6px" }}>
         {meal.name}

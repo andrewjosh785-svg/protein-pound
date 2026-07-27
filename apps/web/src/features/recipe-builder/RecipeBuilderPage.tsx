@@ -46,6 +46,7 @@ export function RecipeBuilderPage({
 
   const [name, setName] = useState("");
   const [servings, setServings] = useState(2);
+  const [servingSizeG, setServingSizeG] = useState("");
   const [protein, setProtein] = useState(25);
   const [carbs, setCarbs] = useState(40);
   const [fat, setFat] = useState(15);
@@ -61,6 +62,7 @@ export function RecipeBuilderPage({
     if (editingMeal) {
       setName(editingMeal.name);
       setServings(editingMeal.servings);
+      setServingSizeG(editingMeal.servingSizeG ? String(editingMeal.servingSizeG) : "");
       setProtein(editingMeal.proteinG);
       setCarbs(editingMeal.carbsG);
       setFat(editingMeal.fatG);
@@ -75,6 +77,7 @@ export function RecipeBuilderPage({
       const blank = emptyForm();
       setName(blank.name);
       setServings(blank.servings);
+      setServingSizeG("");
       setProtein(blank.protein);
       setCarbs(blank.carbs);
       setFat(blank.fat);
@@ -117,6 +120,7 @@ export function RecipeBuilderPage({
     slug: "builder",
     name: name.trim() || "My recipe",
     servings: Math.max(1, servings),
+    servingSizeG: Number(servingSizeG) > 0 ? Math.round(Number(servingSizeG)) : null,
     proteinG: Math.max(0, protein),
     carbsG: Math.max(0, carbs),
     fatG: Math.max(0, fat),
@@ -206,6 +210,17 @@ export function RecipeBuilderPage({
             min="1"
             value={servings}
             onChange={(e) => setServings(Number(e.target.value))}
+            style={{ width: 110 }}
+          />
+        </div>
+        <div className="fld">
+          <label>Serving size (approx, g)</label>
+          <input
+            type="number"
+            min="0"
+            value={servingSizeG}
+            placeholder="optional"
+            onChange={(e) => setServingSizeG(e.target.value)}
             style={{ width: 110 }}
           />
         </div>

@@ -135,7 +135,7 @@ export function GeneratePage() {
               <span className="badge cust">✨ AI</span>
               {meal.isVeggie && <span className="badge v">Veggie</span>}
               <span className="badge">{MEAL_CATEGORY_LABELS[meal.category]}</span>
-              <span className="badge">{servingsLabel(meal.servings)}</span>
+              <span className="badge">{servingsLabel(meal.servings, meal.servingSizeG)}</span>
             </div>
             <h3>{meal.name}</h3>
             <p className="desc">{meal.description}</p>
